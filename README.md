@@ -24,7 +24,6 @@ Contenu Multi-joueurs
 
 -Discutions privée
 
-
 Pour les créateurs de jeu je propose même des outils pour créer vos propres événements à savoir :
 
 -Possibilité d'augmenter en % le taux d'XP, d'obtention d'objet, de gain de pièce d'or
