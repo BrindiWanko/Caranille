@@ -12,4 +12,3 @@ else
 {
 	header("Location: modules/main/index.php");
 }
-?>
