@@ -12,7 +12,7 @@ Fonctions de Caranille :
 
 -Créer des magasins
 
-Contenu Multi-joueurs
+Contenu Multi-joueurs :
 
 -Faire des échanges
 
