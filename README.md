@@ -1,4 +1,4 @@
-Fonctions de Caranille :
+Fonctions de Caranille
 
 -Créer une histoire sous forme de chapitre avec introduction, conclusion
 
