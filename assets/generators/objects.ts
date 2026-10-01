@@ -56,7 +56,7 @@ export function shadedBlob(s: PixelCanvas, x: number, y: number, w: number, h: n
 }
 
 /** Leafy clump: several overlapping shaded blobs with leaf dots. */
-function foliage(s: PixelCanvas, x: number, y: number, w: number, h: number, ramp: Ramp, seed: string): void {
+export function foliage(s: PixelCanvas, x: number, y: number, w: number, h: number, ramp: Ramp, seed: string): void {
   const rng = new Rng(seedFrom(seed));
   shadedBlob(s, x, y, w, h, ramp);
   for (let i = 0; i < (w * h) / 14; i++) {

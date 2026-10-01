@@ -1,6 +1,7 @@
 /**
  * @file Default tilesets shipped with the engine: Outside (villages, fields),
- * Inside (houses, shops) and Dungeon (caves, ruins). Each one is drawn in the
+ * Inside (houses, shops, with extra furniture on sheet C) and Dungeon (caves,
+ * ruins); the biome tilesets are in `tilesets-biomes.ts`. Each one is drawn in the
  * standard sheet layout, so any sheet can later be replaced by a creator's own
  * image of the same format. Flags (passability, star, bush, counter, damage)
  * are defined next to the drawing of each tile.
@@ -8,6 +9,7 @@
 import type { PixelCanvas } from '../../shared/art/pixel.js';
 import type { FloorStyle, Painter, WallStyle } from './autotile.js';
 import * as M from './materials.js';
+import * as F from './furniture.js';
 import * as O from './objects.js';
 import { OUTLINE, RAMPS, type Ramp } from '../../shared/art/palette.js';
 import { TilesetBuilder, TilesetMode, type GeneratedTileset } from './tileset-builder.js';
@@ -31,12 +33,12 @@ const STAR = FLAG_STAR;
 // ---------------------------------------------------------------------------
 
 /** Opaque base ground: the texture everywhere, no visible border. */
-function baseGround(fill: Painter): FloorStyle {
+export function baseGround(fill: Painter): FloorStyle {
   return { fill, outside: fill };
 }
 
 /** Overlay patch (path, flowers...): transparent outside, dark rim. */
-function overlay(fill: Painter, ramp: Ramp, raised = false): FloorStyle {
+export function overlay(fill: Painter, ramp: Ramp, raised = false): FloorStyle {
   return {
     fill,
     outside: null,
@@ -49,7 +51,7 @@ function overlay(fill: Painter, ramp: Ramp, raised = false): FloorStyle {
 }
 
 /** Liquid with a bank: dark bank line, then foam, then the surface. */
-function liquidStyle(ramp: Ramp, frame: number, bank: Painter, bankEdge: string, seed: string): FloorStyle {
+export function liquidStyle(ramp: Ramp, frame: number, bank: Painter, bankEdge: string, seed: string): FloorStyle {
   return {
     fill: M.liquid(ramp, frame, seed),
     outside: bank,
@@ -63,7 +65,7 @@ function liquidStyle(ramp: Ramp, frame: number, bank: Painter, bankEdge: string,
 }
 
 /** Waterfall: rocky borders on the left and right edges. */
-function fallStyle(ramp: Ramp, frame: number, rock: Ramp = RAMPS.rock): WallStyle {
+export function fallStyle(ramp: Ramp, frame: number, rock: Ramp = RAMPS.rock): WallStyle {
   return {
     fill: M.falling(ramp, frame),
     edge: (d) => {
@@ -77,7 +79,7 @@ function fallStyle(ramp: Ramp, frame: number, rock: Ramp = RAMPS.rock): WallStyl
 }
 
 /** Top of a wall or cliff: the material with a dark contour and a light lip. */
-function wallTop(fill: Painter, ramp: Ramp): FloorStyle {
+export function wallTop(fill: Painter, ramp: Ramp): FloorStyle {
   return {
     fill,
     outside: () => OUTLINE,
@@ -88,7 +90,7 @@ function wallTop(fill: Painter, ramp: Ramp): FloorStyle {
 }
 
 /** Face of a wall or cliff. */
-function wallSide(fill: Painter, ramp: Ramp): WallStyle {
+export function wallSide(fill: Painter, ramp: Ramp): WallStyle {
   return {
     fill,
     edge: (d, _x, _y, c) => {
@@ -431,6 +433,60 @@ export function insideTileset(): GeneratedTileset {
   b.object('B', 6, 3, O.windowTile(), X);
   b.object('B', 7, 3, O.door(), PASS);
 
+  // --- C: more furniture (living room, bedroom, kitchen, tavern, workshop, walls) ---
+  b.object('C', 0, 0, F.armchair(), PASS);
+  b.object('C', 1, 0, F.armchair(RAMPS.carpetBlue), PASS);
+  b.object('C', 2, 0, F.sofa(), X, { w: 2, h: 1 });
+  b.object('C', 4, 0, F.roundTable(), X);
+  b.object('C', 5, 0, F.stool(), PASS);
+  b.object('C', 6, 0, F.dresser(), X);
+  b.object('C', 7, 0, F.nightstand(), X);
+  b.object('C', 0, 1, F.desk(), X, { w: 2, h: 1 });
+  b.object('C', 2, 1, F.piano(), X, { w: 2, h: 1 });
+  b.object('C', 4, 1, F.bathtub(), X, { w: 2, h: 1 });
+  b.object('C', 6, 1, F.weaponRack(), X, { w: 2, h: 1 });
+  const tall = [[STAR], [X]];
+  b.object('C', 0, 2, F.grandfatherClock(), tall, { w: 1, h: 2 });
+  b.object('C', 1, 2, F.tallPlant(), tall, { w: 1, h: 2 });
+  b.object('C', 2, 2, F.candelabrum(), tall, { w: 1, h: 2 });
+  b.object('C', 3, 2, F.mirror(), tall, { w: 1, h: 2 });
+  b.object('C', 4, 2, F.stove(), tall, { w: 1, h: 2 });
+  b.object('C', 5, 2, F.cupboard(), tall, { w: 1, h: 2 });
+  b.object('C', 6, 2, F.armorStand(), tall, { w: 1, h: 2 });
+  b.object('C', 7, 2, F.banner(), [[STAR], [STAR]], { w: 1, h: 2 });
+  b.object('C', 0, 4, F.doubleBed(), X, { w: 2, h: 2 });
+  b.object('C', 2, 4, F.doubleBed(RAMPS.carpetBlue), X, { w: 2, h: 2 });
+  b.object('C', 4, 4, F.roundRug(), PASS, { w: 2, h: 2 });
+  b.object('C', 6, 4, F.banner(RAMPS.carpetBlue), [[STAR], [STAR]], { w: 1, h: 2 });
+  b.object('C', 7, 4, F.banner(RAMPS.carpetGreen), [[STAR], [STAR]], { w: 1, h: 2 });
+  b.object('C', 0, 6, F.kitchenCounter('bread'), X | FLAG_COUNTER);
+  b.object('C', 1, 6, F.kitchenCounter('pots'), X | FLAG_COUNTER);
+  b.object('C', 2, 6, F.kitchenCounter('veggies'), X | FLAG_COUNTER);
+  b.object('C', 3, 6, F.cauldron(), X);
+  b.object('C', 4, 6, F.barrelTap(), X);
+  b.object('C', 5, 6, F.barStool(), PASS);
+  b.object('C', 6, 6, F.sacks(), X);
+  b.object('C', 7, 6, F.woodpile(), X);
+  b.object('C', 0, 7, F.washstand(), X);
+  b.object('C', 1, 7, F.cradle(), X);
+  b.object('C', 2, 7, F.flowerVase(), X);
+  b.object('C', 3, 7, F.flowerVase(RAMPS.flowerRed), X);
+  b.object('C', 4, 7, F.anvil(), X);
+  b.object('C', 5, 7, F.spinningWheel(), X);
+  b.object('C', 6, 7, F.globe(), X);
+  b.object('C', 7, 7, F.armchair(RAMPS.carpetGreen), PASS);
+  b.object('C', 0, 8, F.painting('landscape'), STAR);
+  b.object('C', 1, 8, F.painting('portrait'), STAR);
+  b.object('C', 2, 8, F.antlerTrophy(), STAR);
+  b.object('C', 3, 8, F.curtainWindow(), STAR);
+  b.object('C', 4, 8, F.curtainWindow(RAMPS.carpetBlue), STAR);
+  b.object('C', 5, 8, F.wallClock(), STAR);
+  b.object('C', 6, 8, F.wallShelf(), STAR);
+  b.object('C', 7, 8, F.bookWallShelf(), STAR);
+  b.object('C', 0, 9, F.diningTable(), X, { w: 3, h: 2 });
+  b.object('C', 3, 9, F.sofa(RAMPS.carpetBlue), X, { w: 2, h: 1 });
+  b.object('C', 5, 9, F.roundRug(RAMPS.carpetRed), PASS, { w: 2, h: 2 });
+
   return b.build();
 }
 
@@ -498,7 +554,11 @@ export function dungeonTileset(): GeneratedTileset {
 /** Sheet names used by each default tileset, in `tilesetNames` order (A1..E); '' = none. */
 export const DEFAULT_TILESET_SHEETS: Record<string, string[]> = {
   Outside: ['Outside_A1', 'Outside_A2', 'Outside_A3', 'Outside_A4', 'Outside_A5', 'Outside_B', 'Outside_C', '', ''],
-  Inside: ['', 'Inside_A2', '', 'Inside_A4', 'Inside_A5', 'Inside_B', '', '', ''],
+  Inside: ['', 'Inside_A2', '', 'Inside_A4', 'Inside_A5', 'Inside_B', 'Inside_C', '', ''],
   Dungeon: ['Outside_A1', 'Dungeon_A2', '', 'Dungeon_A4', 'Dungeon_A5', 'Dungeon_B', '', '', ''],
+  Cavern: ['Outside_A1', 'Cavern_A2', '', 'Cavern_A4', 'Cavern_A5', 'Cavern_B', '', '', ''],
+  Jungle: ['Outside_A1', 'Jungle_A2', 'Jungle_A3', 'Jungle_A4', 'Jungle_A5', 'Jungle_B', '', '', ''],
+  Volcano: ['Outside_A1', 'Volcano_A2', '', 'Volcano_A4', 'Volcano_A5', 'Volcano_B', '', '', ''],
+  Sea: ['Sea_A1', 'Sea_A2', '', 'Sea_A4', 'Sea_A5', 'Sea_B', '', '', ''],
 };
 

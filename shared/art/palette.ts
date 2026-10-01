@@ -65,6 +65,18 @@ export const RAMPS = {
   fire: ['#8a1a08', '#e0400c', '#ff9a1a', '#fff27a'],
   dark: ['#0a0810', '#15121e', '#211c2e', '#302a40'],
   uiBlue: ['#0c1640', '#16286e', '#2a4a9a', '#4c74cc'],
+  jungle: ['#0c3a1c', '#16602a', '#25893a', '#58c04a'],
+  jungleLight: ['#2a5a10', '#4a8a18', '#78b82a', '#b4e050'],
+  bamboo: ['#4a5a14', '#6e8a1e', '#9cba32', '#cce06a'],
+  mud: ['#3a2616', '#57391f', '#76502c', '#98703e'],
+  basalt: ['#1c1a1e', '#2e2a30', '#433d45', '#5e5660'],
+  obsidian: ['#0e0a16', '#1e1630', '#34285a', '#6a58a8'],
+  magma: ['#3a0c06', '#7a1a08', '#c8400c', '#ff8a1e'],
+  sulfur: ['#6a5a08', '#a8920e', '#dcc82a', '#fff27a'],
+  coral: ['#7a1e3a', '#c23a5a', '#f06a7a', '#ffb0a8'],
+  lagoon: ['#0a5a6e', '#0e8a9a', '#22b8c0', '#8ae8e0'],
+  wetSand: ['#6e5630', '#94743e', '#b8955a', '#d6b67a'],
+  glow: ['#0e3a5a', '#1a74a0', '#3ac0e0', '#b0f6ff'],
 } as const satisfies Record<string, Ramp>;
 
 /** Name of a material ramp. */

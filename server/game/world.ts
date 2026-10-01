@@ -157,6 +157,8 @@ export const sameZone = (a: { mapId: number; instance: number }, b: { mapId: num
 export class World {
   private readonly maps = new Map<number, MapRuntime>();
   private readonly players = new Map<number, PlayerSession>();
+  /** Characters made invisible by an administrator: they stay hidden when they reconnect (until visible again or a restart). */
+  private readonly invisibleIds = new Set<number>();
   /** Positions to broadcast at the next tick, per map. */
   private readonly pendingMoves = new Map<string, { mapId: number; instance: number; moves: Map<number, [number, number, number, Direction]> }>();
   private readonly timers: NodeJS.Timeout[] = [];
@@ -455,6 +457,7 @@ export class World {
       ui: null,
       social: emptySocial(),
       guild: null,
+      invisible: this.invisibleIds.has(character.id),
     };
     this.players.set(character.id, p);
     this.guilds.playerJoined(p);
@@ -532,6 +535,8 @@ export class World {
 
   /** Hides a player from the others (or shows it again). */
   setInvisible(p: PlayerSession, on: boolean): void {
+    if (on) this.invisibleIds.add(p.characterId);
+    else this.invisibleIds.delete(p.characterId);
     if (Boolean(p.invisible) === on) return;
     const room = p.socket.to(mapRoom(p.mapId, p.instance));
     if (on) {

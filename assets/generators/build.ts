@@ -16,6 +16,7 @@ import type { PixelCanvas } from '../../shared/art/pixel.js';
 import { encodePng } from './png.js';
 import { systemSheets } from './system.js';
 import { DEFAULT_TILESET_SHEETS, dungeonTileset, insideTileset, outsideTileset } from './tilesets.js';
+import { cavernTileset, jungleTileset, seaTileset, volcanoTileset } from './tilesets-biomes.js';
 
 /** A generated graphic: path relative to `assets/img/` (without extension) and its canvas. */
 export interface GeneratedImage {
@@ -51,11 +52,15 @@ function main(): void {
   const outside = outsideTileset();
   const inside = insideTileset();
   const dungeon = dungeonTileset();
-  // The dungeon reuses the Outside liquids sheet: give it the same A1 flags.
-  for (let id = TILE_ID_A1; id < TILE_ID_A2; id++) dungeon.flags[id] = outside.flags[id]!;
+  const biomes = [cavernTileset(), jungleTileset(), volcanoTileset(), seaTileset()];
+  // Tilesets that reuse the Outside liquids sheet get the same A1 flags.
+  for (const ts of [dungeon, ...biomes]) {
+    if (DEFAULT_TILESET_SHEETS[ts.name]![0] !== 'Outside_A1') continue;
+    for (let id = TILE_ID_A1; id < TILE_ID_A2; id++) ts.flags[id] = outside.flags[id]!;
+  }
 
   const tilesets: TilesetData[] = [];
-  [outside, inside, dungeon].forEach((ts, index) => {
+  [outside, inside, dungeon, ...biomes].forEach((ts, index) => {
     for (const sheet of TILESET_SHEETS) {
       const canvas = ts.sheets[sheet];
       if (canvas) images.push({ path: `tilesets/${ts.name}_${sheet}`, canvas });
