@@ -74,6 +74,9 @@ export class MapRepository {
    */
   saveWithVersion(info: MapInfo, data: MapData, accountId: number | null): void {
     this.db.transaction(() => {
+      // A map never edited (such as one created by the seed) has no snapshot yet: keep its previous content so the first edit can be undone from the history.
+      const previous = this.dataStmt.get(info.id);
+      if (previous !== undefined && this.listVersionsStmt.all(info.id).length === 0) this.insertVersionStmt.run(info.id, previous, null);
       this.save(info, data);
       this.insertVersionStmt.run(info.id, JSON.stringify(data), accountId);
       this.pruneStmt.run(info.id, info.id, MAX_VERSIONS_PER_MAP);

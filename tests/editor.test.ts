@@ -164,7 +164,9 @@ test('locks, validation, live update of players and version history', async () =
   assert.equal((await updated).map.displayName, 'Village rénové', 'players on the map receive the new version');
 
   const versions = await admin.api<{ versions: { id: number }[] }>('GET', '/maps/1/versions');
-  assert.ok(versions.body.versions.length >= 1);
+  assert.ok(versions.body.versions.length >= 2, 'the first save of a seeded map also keeps its previous content');
+  const oldest = versions.body.versions.at(-1)!;
+  assert.notEqual(server.ctx.maps.version(1, oldest.id)?.displayName, 'Village rénové', 'and it is the content from before the edit');
   socket.close();
   await admin.api('DELETE', '/maps/1/lock');
 });

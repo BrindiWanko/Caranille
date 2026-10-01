@@ -281,10 +281,13 @@ type QuickKind = 'teleport' | 'npc' | 'sign' | 'chest' | 'json';
 
 /** Recognises which quick form can edit an event (`json` when none fits). */
 export function quickKindOf(e: GameEvent): QuickKind {
+  // A chest gives once per character (self switch A), then a second page says it is empty.
+  const first = e.pages[0]!.list.filter((c) => c.code !== Cmd.End);
+  const given = first.filter((c) => c.code !== Cmd.ControlSelfSwitch);
+  if (given.length > 0 && given.every((c) => c.code === Cmd.ChangeItems || c.code === Cmd.ChangeGold) && (e.pages.length === 1 || (e.pages.length === 2 && e.pages[1]!.conditions.selfSwitchValid))) return 'chest';
   if (e.pages.length !== 1) return 'json';
-  const list = e.pages[0]!.list.filter((c) => c.code !== Cmd.End);
+  const list = first;
   if (list.length === 1 && list[0]!.code === Cmd.TransferPlayer && e.pages[0]!.trigger === Trigger.PlayerTouch) return 'teleport';
-  if (list.length > 0 && list.every((c) => c.code === Cmd.ChangeItems || c.code === Cmd.ChangeGold)) return 'chest';
   if (list.length > 0 && list.every((c) => c.code === Cmd.ShowText || c.code === Cmd.TextLine)) {
     return e.pages[0]!.image.characterName ? 'npc' : 'sign';
   }
@@ -438,16 +441,21 @@ export function quickEventDialog(ctx: QuickEventContext, x: number, y: number, e
       if (Number(chestItem.value) > 0) list.push({ code: Cmd.ChangeItems, indent: 0, parameters: [Number(chestItem.value), 0, 0, readInt(chestCount, 1, 99)] });
       const gold = readInt(chestGold, 0, 999_999);
       if (gold > 0) list.push({ code: Cmd.ChangeGold, indent: 0, parameters: [0, 0, gold] });
-      list.push({ code: Cmd.End, indent: 0, parameters: [] });
+      list.push({ code: Cmd.ControlSelfSwitch, indent: 0, parameters: ['A', 0] }, { code: Cmd.End, indent: 0, parameters: [] });
+      const closed = { tileId: 0, characterName: '!Objects1', characterIndex: 0, direction: 2, pattern: 1 } as const;
       return {
         ...base,
-        pages: [createPage({
-          priorityType: Priority.Same,
-          trigger: Trigger.Action,
-          directionFix: true,
-          image: { tileId: 0, characterName: '!Objects1', characterIndex: 0, direction: 2, pattern: 1 },
-          list,
-        })],
+        pages: [
+          createPage({ priorityType: Priority.Same, trigger: Trigger.Action, directionFix: true, image: closed, list }),
+          createPage({
+            conditions: { ...createPage().conditions, selfSwitchValid: true, selfSwitchCh: 'A' },
+            priorityType: Priority.Same,
+            trigger: Trigger.Action,
+            directionFix: true,
+            image: { ...closed, direction: 8 },
+            list: [...textCommands([t('editor.chest_empty')], ['', 0], ''), { code: Cmd.End, indent: 0, parameters: [] }],
+          }),
+        ],
       };
     }
     if (kind === 'npc' || kind === 'sign') {
