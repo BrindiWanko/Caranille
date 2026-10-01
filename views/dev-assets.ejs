@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head', { title: t('dev_assets.title') }) %>
+</head>
+<body class="site dev-assets" data-zoom="1" data-bg="dark">
+  <%- include('partials/account-bar') %>
+  <%- include('partials/lang-switch') %>
+  <header class="window dev-toolbar">
+    <h1><%= t('dev_assets.title') %></h1>
+    <div class="toolbar-group" role="group" aria-label="<%= t('dev_assets.zoom') %>">
+      <span><%= t('dev_assets.zoom') %></span>
+      <% for (const z of [1, 2, 3]) { %>
+        <button type="button" class="button small" data-zoom-set="<%= z %>">×<%= z %></button>
+      <% } %>
+    </div>
+    <div class="toolbar-group" role="group" aria-label="<%= t('dev_assets.background') %>">
+      <span><%= t('dev_assets.background') %></span>
+      <button type="button" class="button small" data-bg-set="dark"><%= t('dev_assets.bg_dark') %></button>
+      <button type="button" class="button small" data-bg-set="light"><%= t('dev_assets.bg_light') %></button>
+      <button type="button" class="button small" data-bg-set="checker"><%= t('dev_assets.bg_checker') %></button>
+    </div>
+    <label class="toolbar-group"><input type="checkbox" id="grid-toggle"> <%= t('dev_assets.grid') %></label>
+  </header>
+  <main class="dev-groups">
+    <% for (const [kind, items] of groups) { %>
+      <section class="window dev-group">
+        <h2><%= t('dev_assets.kind.' + kind) %> <small>(<%= items.length %>)</small></h2>
+        <% if (kind === 'characters') { %>
+          <p class="form-notice"><%= t('dev_assets.animated_hint') %></p>
+        <% } %>
+        <div class="dev-items">
+          <% for (const r of items) { %>
+            <figure class="dev-item" data-kind="<%= kind %>">
+              <div class="dev-image">
+                <img src="<%= r.url %>?v=<%= r.hash %>" alt="<%= r.name %>"
+                     width="<%= r.width || '' %>" height="<%= r.height || '' %>" loading="lazy"
+                     data-width="<%= r.width || 0 %>" data-height="<%= r.height || 0 %>">
+              </div>
+              <% if (kind === 'characters') { %>
+                <canvas class="char-preview" data-src="<%= r.url %>?v=<%= r.hash %>" data-single="<%= r.name.includes('$') ? 1 : 0 %>"></canvas>
+              <% } %>
+              <figcaption>
+                <strong><%= r.name %></strong>
+                <% const sheet = (/-(a[1-5]|[b-e])$/.exec(r.format) || [])[1]; %>
+                <span><%= r.width %>×<%= r.height %> · <%= t('dev_assets.format.' + (sheet ? r.format.slice(0, -sheet.length - 1) : r.format)) %><%= sheet ? ' ' + sheet.toUpperCase() : '' %></span>
+              </figcaption>
+            </figure>
+          <% } %>
+        </div>
+      </section>
+    <% } %>
+  </main>
+  <script type="module" src="/build/dev-assets.js"></script>
+</body>
+</html>

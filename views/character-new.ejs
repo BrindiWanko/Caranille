@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head', { title: t('character_new.title') }) %>
+</head>
+<body class="site">
+  <%- include('partials/account-bar') %>
+  <%- include('partials/lang-switch') %>
+  <main class="window character-create">
+    <h1><%= t('character_new.title') %></h1>
+    <%- include('partials/form-error', { errorKey, errorParams: {} }) %>
+    <form method="post" action="/characters" class="create-layout" id="create-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="create-preview">
+        <canvas id="preview" width="72" height="96" aria-label="<%= t('character_new.preview') %>"></canvas>
+        <div class="preview-controls">
+          <button type="button" class="button small" id="rotate-left" aria-label="<%= t('character_new.rotate_left') %>">⟲</button>
+          <button type="button" class="button small" id="rotate-right" aria-label="<%= t('character_new.rotate_right') %>">⟳</button>
+        </div>
+        <label class="name-field">
+          <span><%= t('character_new.name') %></span>
+          <input name="name" required minlength="3" maxlength="16" autocomplete="off" value="<%= values.name || '' %>">
+          <small><%= t('character_new.name_hint') %></small>
+        </label>
+      </div>
+      <div class="create-options">
+        <fieldset class="class-choice">
+          <legend><%= t('character_new.class') %></legend>
+          <% classes.forEach((cls, i) => { %>
+            <label class="class-card">
+              <input type="radio" name="classId" value="<%= cls.id %>"
+                     data-outfit="<%= cls.outfit %>" data-appearance="<%= JSON.stringify(cls.defaultAppearance) %>"
+                     <%= (values.classId ? values.classId === cls.id : i === 0) ? 'checked' : '' %>>
+              <span class="class-name"><%= cls.name %></span>
+              <span class="class-desc"><%= cls.description %></span>
+            </label>
+          <% }) %>
+        </fieldset>
+        <fieldset class="look-choice">
+          <legend><%= t('character_new.appearance') %></legend>
+          <div class="option-row">
+            <span><%= t('character_new.body') %></span>
+            <label class="pill"><input type="radio" name="body" value="male" <%= values.body !== 'female' ? 'checked' : '' %>> <%= t('character_new.body_male') %></label>
+            <label class="pill"><input type="radio" name="body" value="female" <%= values.body === 'female' ? 'checked' : '' %>> <%= t('character_new.body_female') %></label>
+          </div>
+          <div class="option-row">
+            <span><%= t('character_new.skin') %></span>
+            <% palettes.skin.forEach((color, i) => { %>
+              <label class="swatch" style="--swatch: <%= color %>" title="<%= t('character_new.skin') %> <%= i + 1 %>">
+                <input type="radio" name="skin" value="<%= i %>" <%= (values.skin ?? 0) === i ? 'checked' : '' %>>
+              </label>
+            <% }) %>
+          </div>
+          <div class="option-row">
+            <span><%= t('character_new.hair') %></span>
+            <select name="hair">
+              <% for (const style of hairStyles) { %>
+                <option value="<%= style %>" <%= values.hair === style ? 'selected' : '' %>><%= t('character_new.hair_style.' + style) %></option>
+              <% } %>
+            </select>
+          </div>
+          <div class="option-row">
+            <span><%= t('character_new.hair_color') %></span>
+            <% palettes.hair.forEach((color, i) => { %>
+              <label class="swatch" style="--swatch: <%= color %>" title="<%= t('character_new.hair_color') %> <%= i + 1 %>">
+                <input type="radio" name="hairColor" value="<%= i %>" <%= (values.hairColor ?? 1) === i ? 'checked' : '' %>>
+              </label>
+            <% }) %>
+          </div>
+          <div class="option-row">
+            <span><%= t('character_new.outfit_color') %></span>
+            <% palettes.outfit.forEach((color, i) => { %>
+              <label class="swatch" style="--swatch: <%= color %>" title="<%= t('character_new.outfit_color') %> <%= i + 1 %>">
+                <input type="radio" name="outfitColor" value="<%= i %>" <%= (values.outfitColor ?? 0) === i ? 'checked' : '' %>>
+              </label>
+            <% }) %>
+          </div>
+          <button type="button" class="button small" id="randomize"><%= t('character_new.randomize') %></button>
+        </fieldset>
+      </div>
+      <div class="actions create-actions">
+        <a class="button" href="/characters"><%= t('common.cancel') %></a>
+        <button type="submit" class="button primary"><%= t('character_new.submit') %></button>
+      </div>
+    </form>
+  </main>
+  <script type="module" src="/build/character-new.js"></script>
+</body>
+</html>

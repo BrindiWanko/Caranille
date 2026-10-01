@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head', { title: t('characters.title') }) %>
+</head>
+<body class="site">
+  <%- include('partials/account-bar') %>
+  <%- include('partials/lang-switch') %>
+  <main class="window character-select">
+    <h1><%= t('characters.title') %></h1>
+    <%- include('partials/form-error', { errorKey: typeof errorKey !== 'undefined' ? errorKey : null, errorParams: {} }) %>
+    <% if (characters.length === 0) { %>
+      <p class="form-notice"><%= t('characters.empty') %></p>
+    <% } %>
+    <ul class="character-list">
+      <% for (const c of characters) { %>
+        <li class="character-card">
+          <canvas class="sprite-preview" width="72" height="96"
+                  data-appearance="<%= JSON.stringify(c.appearance) %>" aria-hidden="true"></canvas>
+          <div class="character-info">
+            <strong class="character-name"><%= c.name %></strong>
+            <span><%= t('characters.level_class', { level: c.level, className: c.className }) %></span>
+          </div>
+          <div class="character-actions">
+            <form method="post" action="/characters/<%= c.id %>/play">
+              <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+              <button type="submit" class="button primary"><%= t('characters.play') %></button>
+            </form>
+            <details class="delete-box">
+              <summary><%= t('characters.delete') %></summary>
+              <form method="post" action="/characters/<%= c.id %>/delete" class="stacked-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+                <label>
+                  <span><%= t('characters.delete_confirm_label', { name: c.name }) %></span>
+                  <input name="confirmName" autocomplete="off" required>
+                </label>
+                <button type="submit" class="button danger"><%= t('characters.delete_confirm') %></button>
+              </form>
+            </details>
+          </div>
+        </li>
+      <% } %>
+    </ul>
+    <div class="actions">
+      <% if (canCreate) { %>
+        <a class="button primary" href="/characters/new"><%= t('characters.create') %></a>
+      <% } else { %>
+        <p class="form-notice"><%= t('characters.limit', { limit }) %></p>
+      <% } %>
+    </div>
+  </main>
+  <script type="module" src="/build/characters.js"></script>
+</body>
+</html>

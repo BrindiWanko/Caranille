@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head', { title: t('admin_panel.title') }) %>
+</head>
+<body class="site admin-panel">
+  <%- include('partials/account-bar') %>
+  <%- include('partials/lang-switch') %>
+  <main id="admin-root" class="admin-root" data-csrf="<%= csrfToken() %>" data-role="<%= account ? account.role : '' %>">
+    <p><%= t('common.loading') %></p>
+  </main>
+  <script type="module" src="/build/admin.js"></script>
+</body>
+</html>

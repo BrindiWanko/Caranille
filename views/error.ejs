@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head', { title: String(code) }) %>
+</head>
+<body class="site">
+  <%- include('partials/lang-switch') %>
+  <main class="window hero">
+    <h1><%= code %></h1>
+    <p><%= t(messageKey) %></p>
+    <div class="actions">
+      <a class="button" href="/"><%= t('common.back_home') %></a>
+    </div>
+  </main>
+</body>
+</html>

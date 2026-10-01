@@ -1,0 +1,39 @@
+[
+ null,
+ {
+  "id": 1,
+  "name": "Village",
+  "parentId": 0,
+  "order": 1,
+  "expanded": true,
+  "scrollX": 0,
+  "scrollY": 0
+ },
+ {
+  "id": 2,
+  "name": "Forêt",
+  "parentId": 0,
+  "order": 2,
+  "expanded": true,
+  "scrollX": 0,
+  "scrollY": 0
+ },
+ {
+  "id": 3,
+  "name": "Maison de Tomas",
+  "parentId": 1,
+  "order": 1,
+  "expanded": true,
+  "scrollX": 0,
+  "scrollY": 0
+ },
+ {
+  "id": 4,
+  "name": "Grotte (donjon)",
+  "parentId": 2,
+  "order": 1,
+  "expanded": true,
+  "scrollX": 0,
+  "scrollY": 0
+ }
+]

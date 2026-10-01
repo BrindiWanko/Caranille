@@ -1,0 +1,10 @@
+node_modules/
+dist/
+public/build/
+data/*.db
+data/*.db-*
+data/backups/
+uploads/*
+!uploads/.gitkeep
+prompt.md
+step.txt

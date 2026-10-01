@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body class="site">
+  <%- include('partials/account-bar') %>
+  <%- include('partials/lang-switch') %>
+  <main class="window hero">
+    <h1><%= gameTitle %></h1>
+    <p><%= t('site.tagline') %></p>
+    <div class="actions">
+      <% if (account) { %>
+        <a class="button primary" href="/characters"><%= t('site.play') %></a>
+      <% } else { %>
+        <a class="button primary" href="/login"><%= t('site.login') %></a>
+        <a class="button" href="/register"><%= t('site.register') %></a>
+      <% } %>
+    </div>
+  </main>
+  <footer class="site-footer"><%= t('site.powered_by', { engine: 'Caranille' }) %></footer>
+  <script type="module" src="/build/home.js"></script>
+</body>
+</html>

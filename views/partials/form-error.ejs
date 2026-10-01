@@ -1,0 +1,4 @@
+<%# Error banner for forms. Expects errorKey (translation key or null) and optional errorParams. %>
+<% if (errorKey) { %>
+  <p class="form-error" role="alert"><%= t(errorKey, typeof errorParams !== 'undefined' ? errorParams : {}) %></p>
+<% } %>

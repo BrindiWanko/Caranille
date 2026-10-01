@@ -1,0 +1,1424 @@
+{
+ "version": 1,
+ "database": {
+  "class": [
+   {
+    "id": 1,
+    "name": "Guerrier",
+    "description": "Combattant robuste au corps à corps, maître de l’épée et du bouclier.",
+    "icon": 48,
+    "outfit": "warrior",
+    "defaultAppearance": {
+     "body": "male",
+     "skin": 0,
+     "hair": "spiky",
+     "hairColor": 1,
+     "outfit": "warrior",
+     "outfitColor": 0,
+     "beard": false
+    },
+    "params": {
+     "mhp": {
+      "base": 120,
+      "growth": 18
+     },
+     "mmp": {
+      "base": 20,
+      "growth": 2
+     },
+     "atk": {
+      "base": 16,
+      "growth": 3
+     },
+     "def": {
+      "base": 14,
+      "growth": 3
+     },
+     "mat": {
+      "base": 6,
+      "growth": 1
+     },
+     "mdf": {
+      "base": 8,
+      "growth": 1.5
+     },
+     "agi": {
+      "base": 10,
+      "growth": 1.5
+     },
+     "luk": {
+      "base": 8,
+      "growth": 1
+     }
+    },
+    "expBase": 30,
+    "expGrowth": 25,
+    "learnings": [
+     {
+      "level": 1,
+      "skillId": 1
+     },
+     {
+      "level": 5,
+      "skillId": 2
+     }
+    ],
+    "weaponTypes": [
+     1,
+     2,
+     3,
+     7
+    ],
+    "armorTypes": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "traits": []
+   },
+   {
+    "id": 2,
+    "name": "Mage",
+    "description": "Lanceur de sorts élémentaires dévastateurs, fragile mais redoutable à distance.",
+    "icon": 52,
+    "outfit": "mage",
+    "defaultAppearance": {
+     "body": "male",
+     "skin": 1,
+     "hair": "short",
+     "hairColor": 5,
+     "outfit": "mage",
+     "outfitColor": 1,
+     "beard": false
+    },
+    "params": {
+     "mhp": {
+      "base": 70,
+      "growth": 9
+     },
+     "mmp": {
+      "base": 60,
+      "growth": 8
+     },
+     "atk": {
+      "base": 6,
+      "growth": 1
+     },
+     "def": {
+      "base": 7,
+      "growth": 1
+     },
+     "mat": {
+      "base": 18,
+      "growth": 3.5
+     },
+     "mdf": {
+      "base": 14,
+      "growth": 2.5
+     },
+     "agi": {
+      "base": 11,
+      "growth": 1.5
+     },
+     "luk": {
+      "base": 10,
+      "growth": 1
+     }
+    },
+    "expBase": 30,
+    "expGrowth": 25,
+    "learnings": [
+     {
+      "level": 1,
+      "skillId": 3
+     },
+     {
+      "level": 4,
+      "skillId": 4
+     }
+    ],
+    "weaponTypes": [
+     5,
+     6
+    ],
+    "armorTypes": [
+     1,
+     5
+    ],
+    "traits": []
+   },
+   {
+    "id": 3,
+    "name": "Archer",
+    "description": "Tireur agile qui frappe de loin et esquive les coups.",
+    "icon": 51,
+    "outfit": "archer",
+    "defaultAppearance": {
+     "body": "male",
+     "skin": 0,
+     "hair": "short",
+     "hairColor": 2,
+     "outfit": "archer",
+     "outfitColor": 2,
+     "beard": false
+    },
+    "params": {
+     "mhp": {
+      "base": 90,
+      "growth": 12
+     },
+     "mmp": {
+      "base": 30,
+      "growth": 3
+     },
+     "atk": {
+      "base": 14,
+      "growth": 2.5
+     },
+     "def": {
+      "base": 9,
+      "growth": 1.5
+     },
+     "mat": {
+      "base": 8,
+      "growth": 1
+     },
+     "mdf": {
+      "base": 9,
+      "growth": 1.5
+     },
+     "agi": {
+      "base": 16,
+      "growth": 3
+     },
+     "luk": {
+      "base": 12,
+      "growth": 1.5
+     }
+    },
+    "expBase": 30,
+    "expGrowth": 25,
+    "learnings": [
+     {
+      "level": 1,
+      "skillId": 5
+     }
+    ],
+    "weaponTypes": [
+     4,
+     6
+    ],
+    "armorTypes": [
+     1,
+     2,
+     5
+    ],
+    "traits": [
+     {
+      "kind": "evasion",
+      "target": "",
+      "value": 0.05
+     }
+    ]
+   },
+   {
+    "id": 4,
+    "name": "Prêtre",
+    "description": "Soigneur dévoué qui protège ses alliés grâce à la magie sacrée.",
+    "icon": 70,
+    "outfit": "priest",
+    "defaultAppearance": {
+     "body": "male",
+     "skin": 0,
+     "hair": "short",
+     "hairColor": 1,
+     "outfit": "priest",
+     "outfitColor": 7,
+     "beard": false
+    },
+    "params": {
+     "mhp": {
+      "base": 85,
+      "growth": 11
+     },
+     "mmp": {
+      "base": 50,
+      "growth": 7
+     },
+     "atk": {
+      "base": 8,
+      "growth": 1.5
+     },
+     "def": {
+      "base": 10,
+      "growth": 2
+     },
+     "mat": {
+      "base": 14,
+      "growth": 2.5
+     },
+     "mdf": {
+      "base": 16,
+      "growth": 3
+     },
+     "agi": {
+      "base": 9,
+      "growth": 1
+     },
+     "luk": {
+      "base": 12,
+      "growth": 1.5
+     }
+    },
+    "expBase": 30,
+    "expGrowth": 25,
+    "learnings": [
+     {
+      "level": 1,
+      "skillId": 6
+     }
+    ],
+    "weaponTypes": [
+     5,
+     7
+    ],
+    "armorTypes": [
+     1,
+     2,
+     5
+    ],
+    "traits": []
+   }
+  ],
+  "skill": [
+   {
+    "id": 1,
+    "name": "Coup puissant",
+    "description": "Une frappe appuyée au corps à corps.",
+    "icon": 72,
+    "mpCost": 3,
+    "cooldown": 4,
+    "range": 1,
+    "area": 0,
+    "scope": "enemy",
+    "damage": {
+     "type": "hp_damage",
+     "formula": "a.atk * 5 - b.def * 2",
+     "element": 1,
+     "variance": 20,
+     "critical": true
+    },
+    "animationId": 0,
+    "effects": [],
+    "message": ""
+   },
+   {
+    "id": 2,
+    "name": "Cri de guerre",
+    "description": "Augmente l’attaque pour un moment.",
+    "icon": 75,
+    "mpCost": 6,
+    "cooldown": 30,
+    "range": 0,
+    "area": 0,
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "animationId": 0,
+    "effects": [
+     {
+      "kind": "add_state",
+      "value": 3,
+      "percent": 100
+     }
+    ],
+    "message": ""
+   },
+   {
+    "id": 3,
+    "name": "Boule de feu",
+    "description": "Projette une boule de flammes.",
+    "icon": 64,
+    "mpCost": 5,
+    "cooldown": 2,
+    "range": 5,
+    "area": 0,
+    "scope": "enemy",
+    "damage": {
+     "type": "hp_damage",
+     "formula": "a.mat * 4 - b.mdf * 2",
+     "element": 2,
+     "variance": 20,
+     "critical": false
+    },
+    "animationId": 0,
+    "effects": [],
+    "message": ""
+   },
+   {
+    "id": 4,
+    "name": "Éclair de givre",
+    "description": "Un trait de glace qui ralentit.",
+    "icon": 65,
+    "mpCost": 7,
+    "cooldown": 4,
+    "range": 5,
+    "area": 0,
+    "scope": "enemy",
+    "damage": {
+     "type": "hp_damage",
+     "formula": "a.mat * 4 - b.mdf * 2",
+     "element": 3,
+     "variance": 20,
+     "critical": false
+    },
+    "animationId": 0,
+    "effects": [],
+    "message": ""
+   },
+   {
+    "id": 5,
+    "name": "Tir précis",
+    "description": "Une flèche qui vise les points faibles.",
+    "icon": 73,
+    "mpCost": 3,
+    "cooldown": 3,
+    "range": 6,
+    "area": 0,
+    "scope": "enemy",
+    "damage": {
+     "type": "hp_damage",
+     "formula": "a.atk * 4 + a.agi - b.def * 2",
+     "element": 1,
+     "variance": 20,
+     "critical": true
+    },
+    "animationId": 0,
+    "effects": [],
+    "message": ""
+   },
+   {
+    "id": 6,
+    "name": "Soin",
+    "description": "Restaure les PV d’un allié.",
+    "icon": 67,
+    "mpCost": 5,
+    "cooldown": 2,
+    "range": 5,
+    "area": 0,
+    "scope": "ally",
+    "damage": {
+     "type": "hp_recover",
+     "formula": "a.mat * 3 + 20",
+     "element": 8,
+     "variance": 20,
+     "critical": false
+    },
+    "animationId": 0,
+    "effects": [],
+    "message": ""
+   }
+  ],
+  "item": [
+   {
+    "id": 1,
+    "name": "Potion",
+    "description": "Restaure 50 PV.",
+    "icon": 32,
+    "kind": "regular",
+    "price": 30,
+    "consumable": true,
+    "maxStack": 99,
+    "occasion": "always",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [
+     {
+      "kind": "recover_hp",
+      "value": 50,
+      "percent": 0
+     }
+    ],
+    "animationId": 0
+   },
+   {
+    "id": 2,
+    "name": "Éther",
+    "description": "Restaure 30 PM.",
+    "icon": 33,
+    "kind": "regular",
+    "price": 60,
+    "consumable": true,
+    "maxStack": 99,
+    "occasion": "always",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [
+     {
+      "kind": "recover_mp",
+      "value": 30,
+      "percent": 0
+     }
+    ],
+    "animationId": 0
+   },
+   {
+    "id": 3,
+    "name": "Élixir",
+    "description": "Restaure tous les PV et PM.",
+    "icon": 35,
+    "kind": "regular",
+    "price": 500,
+    "consumable": true,
+    "maxStack": 99,
+    "occasion": "always",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [
+     {
+      "kind": "recover_hp",
+      "value": 0,
+      "percent": 100
+     },
+     {
+      "kind": "recover_mp",
+      "value": 0,
+      "percent": 100
+     }
+    ],
+    "animationId": 0
+   },
+   {
+    "id": 4,
+    "name": "Herbe médicinale",
+    "description": "Guérit le poison.",
+    "icon": 36,
+    "kind": "regular",
+    "price": 15,
+    "consumable": true,
+    "maxStack": 99,
+    "occasion": "always",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [
+     {
+      "kind": "remove_state",
+      "value": 1,
+      "percent": 100
+     }
+    ],
+    "animationId": 0
+   },
+   {
+    "id": 5,
+    "name": "Pain",
+    "description": "Restaure 20 PV.",
+    "icon": 37,
+    "kind": "regular",
+    "price": 5,
+    "consumable": true,
+    "maxStack": 99,
+    "occasion": "always",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [
+     {
+      "kind": "recover_hp",
+      "value": 20,
+      "percent": 0
+     }
+    ],
+    "animationId": 0
+   },
+   {
+    "id": 6,
+    "name": "Clé rouillée",
+    "description": "Une vieille clé. Que peut-elle ouvrir ?",
+    "icon": 40,
+    "kind": "key",
+    "price": 0,
+    "consumable": false,
+    "maxStack": 1,
+    "occasion": "never",
+    "scope": "self",
+    "damage": {
+     "type": "none",
+     "formula": "0",
+     "element": 0,
+     "variance": 20,
+     "critical": false
+    },
+    "effects": [],
+    "animationId": 0
+   }
+  ],
+  "weapon": [
+   {
+    "id": 1,
+    "name": "Épée courte",
+    "description": "Une lame simple mais fiable.",
+    "icon": 48,
+    "weaponType": 1,
+    "price": 100,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 8,
+     "def": 0,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "range": 1,
+    "animationId": 0,
+    "traits": []
+   },
+   {
+    "id": 2,
+    "name": "Bâton de chêne",
+    "description": "Canalise la magie.",
+    "icon": 52,
+    "weaponType": 5,
+    "price": 90,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 2,
+     "def": 0,
+     "mat": 8,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "range": 1,
+    "animationId": 0,
+    "traits": []
+   },
+   {
+    "id": 3,
+    "name": "Arc court",
+    "description": "Tire à distance.",
+    "icon": 51,
+    "weaponType": 4,
+    "price": 110,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 7,
+     "def": 0,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 2,
+     "luk": 0
+    },
+    "range": 5,
+    "animationId": 0,
+    "traits": []
+   },
+   {
+    "id": 4,
+    "name": "Masse bénie",
+    "description": "Une masse consacrée.",
+    "icon": 54,
+    "weaponType": 7,
+    "price": 120,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 6,
+     "def": 0,
+     "mat": 0,
+     "mdf": 3,
+     "agi": 0,
+     "luk": 0
+    },
+    "range": 1,
+    "animationId": 0,
+    "traits": []
+   }
+  ],
+  "armor": [
+   {
+    "id": 1,
+    "name": "Tunique de cuir",
+    "description": "Protection légère.",
+    "icon": 58,
+    "armorType": 2,
+    "slot": "body",
+    "price": 80,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 0,
+     "def": 5,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "traits": []
+   },
+   {
+    "id": 2,
+    "name": "Robe d’apprenti",
+    "description": "Tissée de fils enchantés.",
+    "icon": 59,
+    "armorType": 1,
+    "slot": "body",
+    "price": 80,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 0,
+     "def": 2,
+     "mat": 0,
+     "mdf": 5,
+     "agi": 0,
+     "luk": 0
+    },
+    "traits": []
+   },
+   {
+    "id": 3,
+    "name": "Bouclier en bois",
+    "description": "Arrête les coups les moins forts.",
+    "icon": 56,
+    "armorType": 4,
+    "slot": "shield",
+    "price": 60,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 0,
+     "def": 4,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "traits": []
+   },
+   {
+    "id": 4,
+    "name": "Casque de fer",
+    "description": "Protège la tête.",
+    "icon": 57,
+    "armorType": 3,
+    "slot": "head",
+    "price": 90,
+    "params": {
+     "mhp": 0,
+     "mmp": 0,
+     "atk": 0,
+     "def": 4,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "traits": []
+   },
+   {
+    "id": 5,
+    "name": "Anneau de vigueur",
+    "description": "Augmente les PV maximum.",
+    "icon": 62,
+    "armorType": 5,
+    "slot": "accessory",
+    "price": 200,
+    "params": {
+     "mhp": 30,
+     "mmp": 0,
+     "atk": 0,
+     "def": 0,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 0,
+     "luk": 0
+    },
+    "traits": []
+   }
+  ],
+  "enemy": [
+   {
+    "id": 1,
+    "name": "Slime bleu",
+    "characterName": "Monster1",
+    "characterIndex": 0,
+    "params": {
+     "mhp": 40,
+     "mmp": 0,
+     "atk": 8,
+     "def": 4,
+     "mat": 2,
+     "mdf": 4,
+     "agi": 5,
+     "luk": 5
+    },
+    "exp": 8,
+    "gold": 5,
+    "drops": [
+     {
+      "kind": "item",
+      "id": 1,
+      "chance": 30
+     }
+    ],
+    "ai": "passive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 2,
+    "name": "Chauve-souris",
+    "characterName": "Monster1",
+    "characterIndex": 1,
+    "params": {
+     "mhp": 30,
+     "mmp": 0,
+     "atk": 10,
+     "def": 3,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 14,
+     "luk": 8
+    },
+    "exp": 10,
+    "gold": 6,
+    "drops": [
+     {
+      "kind": "item",
+      "id": 5,
+      "chance": 20
+     }
+    ],
+    "ai": "aggressive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 3,
+    "name": "Loup gris",
+    "characterName": "Monster1",
+    "characterIndex": 2,
+    "params": {
+     "mhp": 70,
+     "mmp": 0,
+     "atk": 16,
+     "def": 7,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 12,
+     "luk": 6
+    },
+    "exp": 20,
+    "gold": 12,
+    "drops": [
+     {
+      "kind": "item",
+      "id": 1,
+      "chance": 25
+     }
+    ],
+    "ai": "aggressive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 4,
+    "name": "Gobelin",
+    "characterName": "Monster1",
+    "characterIndex": 3,
+    "params": {
+     "mhp": 90,
+     "mmp": 0,
+     "atk": 18,
+     "def": 10,
+     "mat": 0,
+     "mdf": 0,
+     "agi": 9,
+     "luk": 7
+    },
+    "exp": 28,
+    "gold": 20,
+    "drops": [
+     {
+      "kind": "weapon",
+      "id": 1,
+      "chance": 5
+     },
+     {
+      "kind": "item",
+      "id": 2,
+      "chance": 15
+     }
+    ],
+    "ai": "aggressive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 5,
+    "name": "Squelette",
+    "characterName": "Monster1",
+    "characterIndex": 4,
+    "params": {
+     "mhp": 110,
+     "mmp": 0,
+     "atk": 22,
+     "def": 14,
+     "mat": 0,
+     "mdf": 2,
+     "agi": 8,
+     "luk": 5
+    },
+    "exp": 36,
+    "gold": 25,
+    "drops": [
+     {
+      "kind": "armor",
+      "id": 4,
+      "chance": 5
+     }
+    ],
+    "ai": "aggressive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 6,
+    "name": "Champignon furieux",
+    "characterName": "Monster1",
+    "characterIndex": 5,
+    "params": {
+     "mhp": 60,
+     "mmp": 0,
+     "atk": 12,
+     "def": 8,
+     "mat": 10,
+     "mdf": 0,
+     "agi": 6,
+     "luk": 0
+    },
+    "exp": 15,
+    "gold": 9,
+    "drops": [
+     {
+      "kind": "item",
+      "id": 4,
+      "chance": 30
+     }
+    ],
+    "ai": "passive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 30,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 7,
+    "name": "Seigneur démon",
+    "characterName": "$Boss1",
+    "characterIndex": 0,
+    "params": {
+     "mhp": 5000,
+     "mmp": 500,
+     "atk": 60,
+     "def": 40,
+     "mat": 60,
+     "mdf": 40,
+     "agi": 20,
+     "luk": 20
+    },
+    "exp": 2000,
+    "gold": 1500,
+    "drops": [
+     {
+      "kind": "item",
+      "id": 3,
+      "chance": 100
+     }
+    ],
+    "ai": "aggressive",
+    "aggroRadius": 5,
+    "actions": [],
+    "respawn": 3600,
+    "moveSpeed": 3,
+    "traits": []
+   },
+   {
+    "id": 8,
+    "name": "Roi gobelin",
+    "characterName": "Monster1",
+    "characterIndex": 3,
+    "params": {
+     "mhp": 600,
+     "mmp": 50,
+     "atk": 26,
+     "def": 14,
+     "mat": 10,
+     "mdf": 10,
+     "agi": 10,
+     "luk": 10
+    },
+    "exp": 150,
+    "gold": 100,
+    "drops": [],
+    "ai": "aggressive",
+    "aggroRadius": 4,
+    "actions": [],
+    "respawn": 3600,
+    "moveSpeed": 3,
+    "traits": []
+   }
+  ],
+  "state": [
+   {
+    "id": 1,
+    "name": "Poison",
+    "icon": 80,
+    "duration": 20,
+    "restriction": "none",
+    "hpPerSecond": -2,
+    "mpPerSecond": -100,
+    "removeOnDamage": false,
+    "traits": [],
+    "message": "est empoisonné !"
+   },
+   {
+    "id": 2,
+    "name": "Étourdissement",
+    "icon": 82,
+    "duration": 3,
+    "restriction": "cannot_both",
+    "hpPerSecond": -100,
+    "mpPerSecond": -100,
+    "removeOnDamage": true,
+    "traits": [],
+    "message": "est étourdi !"
+   },
+   {
+    "id": 3,
+    "name": "Force accrue",
+    "icon": 85,
+    "duration": 30,
+    "restriction": "none",
+    "hpPerSecond": -100,
+    "mpPerSecond": -100,
+    "removeOnDamage": false,
+    "traits": [
+     {
+      "kind": "param_rate",
+      "target": "atk",
+      "value": 1.25
+     }
+    ],
+    "message": "se sent plus fort !"
+   },
+   {
+    "id": 4,
+    "name": "Régénération",
+    "icon": 89,
+    "duration": 15,
+    "restriction": "none",
+    "hpPerSecond": 2,
+    "mpPerSecond": -100,
+    "removeOnDamage": false,
+    "traits": [],
+    "message": "se régénère."
+   }
+  ],
+  "animation": [],
+  "commonEvent": [],
+  "quest": [
+   {
+    "id": 1,
+    "name": "Le coffret de Lina",
+    "icon": 4,
+    "description": "Lina a égaré son petit coffret rouge près de l’étang du village.",
+    "category": "Village de Caranille",
+    "level": 1,
+    "prerequisite": 0,
+    "autoComplete": false,
+    "takeItems": false,
+    "steps": [],
+    "rewardGold": 0,
+    "rewardExp": 0,
+    "rewardItems": []
+   },
+   {
+    "id": 2,
+    "name": "Des herbes pour le sage",
+    "icon": 36,
+    "description": "Le vieux sage du village a besoin d’herbes médicinales pour préparer ses remèdes.",
+    "category": "Chapitre 1 — L’éveil de la forêt",
+    "level": 1,
+    "prerequisite": 0,
+    "autoComplete": false,
+    "takeItems": true,
+    "steps": [
+     {
+      "description": "Demandez au garde du village où poussent les herbes.",
+      "objectives": [
+       {
+        "kind": "talk",
+        "mapId": 1,
+        "eventId": 3,
+        "enemyId": 1,
+        "itemId": 1,
+        "switchId": 1,
+        "x": 0,
+        "y": 0,
+        "radius": 0,
+        "count": 1,
+        "label": ""
+       }
+      ]
+     },
+     {
+      "description": "Rendez-vous dans la forêt de Bruyère, au nord du village.",
+      "objectives": [
+       {
+        "kind": "reach",
+        "mapId": 2,
+        "eventId": 1,
+        "enemyId": 1,
+        "itemId": 1,
+        "switchId": 1,
+        "x": 14,
+        "y": 25,
+        "radius": 4,
+        "count": 1,
+        "label": ""
+       }
+      ]
+     },
+     {
+      "description": "Cueillez deux herbes médicinales dans la forêt.",
+      "objectives": [
+       {
+        "kind": "collect",
+        "mapId": 1,
+        "eventId": 1,
+        "enemyId": 1,
+        "itemId": 4,
+        "switchId": 1,
+        "x": 0,
+        "y": 0,
+        "radius": 0,
+        "count": 2,
+        "label": ""
+       }
+      ]
+     }
+    ],
+    "rewardGold": 80,
+    "rewardExp": 60,
+    "rewardItems": [
+     {
+      "kind": "item",
+      "item": 1,
+      "weapon": 1,
+      "armor": 1,
+      "count": 2
+     }
+    ]
+   },
+   {
+    "id": 3,
+    "name": "La terre gronde",
+    "icon": 31,
+    "description": "Le sage s’inquiète des grondements venus de la forêt. Borin le bûcheron en sait peut-être plus.",
+    "category": "Chapitre 1 — L’éveil de la forêt",
+    "level": 1,
+    "prerequisite": 2,
+    "autoComplete": true,
+    "takeItems": false,
+    "steps": [
+     {
+      "description": "Trouvez Borin le bûcheron dans la clairière de la forêt.",
+      "objectives": [
+       {
+        "kind": "talk",
+        "mapId": 2,
+        "eventId": 1,
+        "enemyId": 1,
+        "itemId": 1,
+        "switchId": 1,
+        "x": 0,
+        "y": 0,
+        "radius": 0,
+        "count": 1,
+        "label": ""
+       }
+      ]
+     },
+     {
+      "description": "Rapportez ce que vous avez vu au vieux sage.",
+      "objectives": [
+       {
+        "kind": "talk",
+        "mapId": 1,
+        "eventId": 4,
+        "enemyId": 1,
+        "itemId": 1,
+        "switchId": 1,
+        "x": 0,
+        "y": 0,
+        "radius": 0,
+        "count": 1,
+        "label": "Prévenir le vieux sage"
+       }
+      ]
+     }
+    ],
+    "rewardGold": 50,
+    "rewardExp": 80,
+    "rewardItems": [
+     {
+      "kind": "item",
+      "item": 3,
+      "weapon": 1,
+      "armor": 1,
+      "count": 1
+     }
+    ]
+   },
+   {
+    "id": 4,
+    "name": "Les nuisibles de la clairière",
+    "icon": 72,
+    "description": "Des slimes ont envahi la clairière de la forêt depuis le tremblement de terre. Borin aimerait qu’on l’en débarrasse.",
+    "category": "Chapitre 1 — L’éveil de la forêt",
+    "level": 1,
+    "prerequisite": 3,
+    "autoComplete": false,
+    "takeItems": false,
+    "steps": [
+     {
+      "description": "Battez trois slimes bleus dans la clairière.",
+      "objectives": [
+       {
+        "kind": "kill",
+        "mapId": 1,
+        "eventId": 1,
+        "enemyId": 1,
+        "itemId": 1,
+        "switchId": 1,
+        "x": 0,
+        "y": 0,
+        "radius": 0,
+        "count": 3,
+        "label": ""
+       }
+      ]
+     }
+    ],
+    "rewardGold": 60,
+    "rewardExp": 50,
+    "rewardItems": [
+     {
+      "kind": "armor",
+      "item": 1,
+      "weapon": 1,
+      "armor": 1,
+      "count": 1
+     }
+    ]
+   }
+  ],
+  "raid": [
+   {
+    "id": 1,
+    "name": "Le repaire du roi gobelin",
+    "description": "Au fond de la grotte de Bruyère, le roi gobelin rassemble ses troupes. Chaque groupe l’affronte dans sa propre copie de la grotte.",
+    "mapId": 4,
+    "bossEnemyId": 8,
+    "minLevel": 1,
+    "minPlayers": 1,
+    "maxPlayers": 5,
+    "lockout": "weekly",
+    "lootMode": "round_robin",
+    "rewardGold": 150,
+    "rewardExp": 120,
+    "rewardItems": [
+     {
+      "kind": "armor",
+      "item": 1,
+      "weapon": 1,
+      "armor": 4,
+      "count": 1
+     },
+     {
+      "kind": "item",
+      "item": 3,
+      "weapon": 1,
+      "armor": 1,
+      "count": 1
+     }
+    ],
+    "phases": [
+     {
+      "hpBelow": 75,
+      "mechanic": "adds",
+      "enemyId": 4,
+      "count": 2,
+      "damage": 1,
+      "radius": 0,
+      "interval": 0
+     },
+     {
+      "hpBelow": 50,
+      "mechanic": "zone",
+      "enemyId": 1,
+      "count": 1,
+      "damage": 30,
+      "radius": 1,
+      "interval": 6
+     },
+     {
+      "hpBelow": 25,
+      "mechanic": "enrage",
+      "enemyId": 1,
+      "count": 1,
+      "damage": 1,
+      "radius": 0,
+      "interval": 0
+     }
+    ]
+   }
+  ]
+ },
+ "system": {
+  "gameTitle": "Caranille",
+  "tileSize": 48,
+  "startPosition": {
+   "mapId": 1,
+   "x": 20,
+   "y": 17,
+   "direction": 2
+  },
+  "currencyName": "Or",
+  "maxLevel": 99,
+  "maxPartySize": 5,
+  "maxRaidSize": 20,
+  "instanceIdleMinutes": 5,
+  "guildCreationCost": 1000,
+  "elements": [
+   "Aucun",
+   "Physique",
+   "Feu",
+   "Glace",
+   "Foudre",
+   "Eau",
+   "Terre",
+   "Vent",
+   "Lumière",
+   "Ténèbres"
+  ],
+  "weaponTypes": [
+   "Aucun",
+   "Épée",
+   "Hache",
+   "Lance",
+   "Arc",
+   "Bâton",
+   "Dague",
+   "Masse"
+  ],
+  "armorTypes": [
+   "Aucun",
+   "Tissu",
+   "Cuir",
+   "Métal",
+   "Bouclier",
+   "Accessoire"
+  ],
+  "startingGold": 50,
+  "statPointsPerLevel": 3,
+  "sellRate": 50,
+  "bagSize": 48,
+  "terms": {
+   "level": "Niveau",
+   "hp": "PV",
+   "mp": "PM",
+   "xp": "Expérience",
+   "params": {
+    "mhp": "PV max",
+    "mmp": "PM max",
+    "atk": "Attaque",
+    "def": "Défense",
+    "mat": "Magie",
+    "mdf": "Déf. magique",
+    "agi": "Agilité",
+    "luk": "Chance"
+   }
+  },
+  "switches": [
+   {
+    "name": "Coffret de Lina retrouvé",
+    "global": false
+   }
+  ],
+  "variables": [
+   {
+    "name": "Signatures du registre",
+    "global": true
+   }
+  ]
+ }
+}

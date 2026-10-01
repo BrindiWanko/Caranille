@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": ["scripts/**/*.ts", "tests/**/*.ts", "assets/generators/**/*.ts", "server/**/*.ts", "shared/**/*.ts"]
+}

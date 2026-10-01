@@ -1,0 +1,14 @@
+{
+  "name": "Caranille",
+  "short_name": "Caranille",
+  "start_url": "/game",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#16286e",
+  "icons": [
+    { "src": "/img/system/AppIcon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/img/system/AppIcon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

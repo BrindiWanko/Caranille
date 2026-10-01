@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#16286e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/img/system/AppIcon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/img/system/AppIcon.svg">
+  <title><%= characterName %> - <%= gameTitle %></title>
+  <link rel="stylesheet" href="/build/game-style.css">
+  <script id="i18n-data" type="application/json" data-locale="<%= locale %>"><%- i18nJson %></script>
+</head>
+<body class="game">
+  <div id="game-root" data-csrf="<%= csrfToken() %>">
+    <p class="boot-message"><%= t('common.loading') %></p>
+  </div>
+  <script type="module" src="/build/game.js"></script>
+</body>
+</html>

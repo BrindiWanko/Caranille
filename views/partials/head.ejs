@@ -1,0 +1,9 @@
+<%#
+  Common <head> content of out-of-game pages.
+  Expects: title (optional, page title shown before the game title).
+%><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title><%= typeof title !== 'undefined' && title ? title + ' - ' + gameTitle : gameTitle %></title>
+<link rel="stylesheet" href="/build/site.css">
+<script id="i18n-data" type="application/json" data-locale="<%= locale %>"><%- i18nJson %></script>

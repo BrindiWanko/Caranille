@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="<%= locale %>">
+<head>
+  <%- include('../partials/head', { title: t('auth.login.title') }) %>
+</head>
+<body class="site">
+  <%- include('../partials/lang-switch') %>
+  <main class="window form-window">
+    <h1><%= t('auth.login.title') %></h1>
+    <%- include('../partials/form-error', { errorKey, errorParams }) %>
+    <form method="post" action="/login" class="stacked-form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <input type="hidden" name="next" value="<%= next %>">
+      <label>
+        <span><%= t('auth.field.username') %></span>
+        <input name="username" autocomplete="username" required autofocus
+               maxlength="20" value="<%= values.username || '' %>">
+      </label>
+      <label>
+        <span><%= t('auth.field.password') %></span>
+        <input name="password" type="password" autocomplete="current-password" required maxlength="256">
+      </label>
+      <button type="submit" class="button primary"><%= t('auth.login.submit') %></button>
+    </form>
+    <p class="form-footer"><%= t('auth.login.no_account') %> <a href="/register"><%= t('site.register') %></a></p>
+  </main>
+  <p class="site-footer"><a href="/"><%= t('common.back_home') %></a></p>
+</body>
+</html>

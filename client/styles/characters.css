@@ -1,0 +1,69 @@
+/*
+ * Character selection and creation screens (imported by site.css).
+ */
+
+/* Selection. */
+.character-select { width: 100%; max-width: 620px; }
+.character-select h1, .character-create h1 { margin: 0 0 14px; font-size: 1.5rem; color: var(--accent); text-align: center; }
+.character-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.character-card {
+  display: flex; align-items: center; gap: 14px; padding: 8px 12px;
+  border: 2px solid #6b7cc4; border-radius: 4px; background: rgba(5, 10, 35, 0.45);
+}
+.sprite-preview, #preview { image-rendering: pixelated; flex: none; }
+.character-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.character-name { font-size: 1.15rem; overflow-wrap: anywhere; }
+.character-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.character-actions form { margin: 0; }
+.delete-box summary { cursor: pointer; color: var(--text-dim); font-size: 0.8rem; }
+.delete-box .stacked-form { margin-top: 6px; max-width: 220px; }
+.button.danger { border-color: var(--danger); background: linear-gradient(180deg, #b0343c, #6e1a20); }
+@media (max-width: 520px) {
+  .character-card { flex-wrap: wrap; }
+  .character-actions { width: 100%; align-items: stretch; }
+}
+
+/* Creation. */
+.character-create { width: 100%; max-width: 860px; }
+.create-layout { display: grid; grid-template-columns: 220px 1fr; gap: 18px; }
+.create-preview { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+#preview {
+  width: 144px; height: 192px; padding: 8px; box-sizing: content-box;
+  background: radial-gradient(ellipse at 50% 90%, #3a8e4c 0 30%, #245a2c 60%, #173f24 100%);
+  border: 2px solid var(--win-border); border-radius: 4px;
+}
+.preview-controls { display: flex; gap: 8px; }
+.name-field { display: flex; flex-direction: column; gap: 4px; width: 100%; font-weight: 600; }
+.name-field input, .option-row select {
+  font: inherit; padding: 8px 10px; border: 2px solid #6b7cc4; border-radius: 3px;
+  background: rgba(5, 10, 35, 0.75); color: var(--text);
+}
+.name-field small { font-weight: 400; color: var(--text-dim); font-size: 0.75rem; }
+.create-options { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.create-options fieldset { border: 2px solid #6b7cc4; border-radius: 4px; padding: 10px 12px; margin: 0; }
+.create-options legend { font-weight: 700; padding: 0 6px; color: var(--accent); }
+.class-choice { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.class-card {
+  position: relative; display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; cursor: pointer;
+  border: 2px solid transparent; border-radius: 4px; background: rgba(5, 10, 35, 0.45);
+}
+.class-card input { position: absolute; opacity: 0; pointer-events: none; }
+.class-card:has(input:checked) { border-color: var(--accent); background: rgba(80, 110, 220, 0.35); }
+.class-card:has(input:focus-visible) { outline: 2px solid #fff; }
+.class-name { font-weight: 700; }
+.class-desc { font-size: 0.78rem; color: var(--text-dim); }
+.option-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 8px; }
+.option-row > span:first-child { min-width: 150px; font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: rgba(5, 10, 35, 0.5); cursor: pointer; }
+.swatch {
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer; background: var(--swatch);
+  border: 2px solid rgba(0, 0, 0, 0.6); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+.swatch input { opacity: 0; width: 0; height: 0; margin: 0; }
+.swatch:has(input:checked) { box-shadow: 0 0 0 3px var(--accent); }
+.swatch:has(input:focus-visible) { outline: 2px solid #fff; }
+.create-actions { grid-column: 1 / -1; justify-content: flex-end; }
+@media (max-width: 700px) {
+  .create-layout { grid-template-columns: 1fr; }
+  .option-row > span:first-child { min-width: 100%; }
+}

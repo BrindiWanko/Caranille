@@ -1,0 +1,14 @@
+<%# Top-left bar shown to logged-in visitors: name, role badge and logout. %>
+<% if (account) { %>
+  <div class="account-bar">
+    <span class="account-name"><%= account.username %></span>
+    <% if (account.role !== 'player') { %>
+      <span class="role-badge role-<%= account.role %>"><%= t('auth.role.' + account.role) %></span>
+      <a class="link-button" href="/admin"><%= t('admin_panel.title') %></a>
+    <% } %>
+    <form method="post" action="/logout" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <button type="submit" class="link-button"><%= t('auth.logout') %></button>
+    </form>
+  </div>
+<% } %>

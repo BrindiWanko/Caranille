@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "test3009",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "dist/server/index.js"
+      ],
+      "port": 3009,
+      "env": {
+        "PORT": "3009",
+        "DB_PATH": "data/test10.db"
+      }
+    }
+  ]
+}
