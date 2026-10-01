@@ -30,7 +30,7 @@
     "editor",
     "socket.io"
   ],
-  "author": "",
+  "author": "Jérémy C. (Caranille)",
   "license": "Apache-2.0",
   "dependencies": {
     "bcrypt": "^6.0.0",
