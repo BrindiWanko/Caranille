@@ -22,6 +22,7 @@
   },
   "auth": {
     "field": {
+      "setup_code": "Setup code",
       "username": "Username",
       "email": "E-mail address",
       "password": "Password",
@@ -38,6 +39,7 @@
       "have_account": "Already registered?",
       "username_hint": "3 to 20 characters: letters, digits, _ and -, starting with a letter.",
       "password_hint": "At least 8 characters.",
+      "setup_code_hint": "Shown in the server log at start (or set with the SETUP_CODE variable).",
       "first_admin": "This is the first account of this server: it will receive the administrator role."
     },
     "logout": "Log out",
@@ -66,6 +68,7 @@
       "server": "An unexpected error occurred. Please try again later."
     },
     "auth": {
+      "setup_code": "Wrong setup code: it is shown in the server log.",
       "username_invalid": "Invalid username: use 3 to 20 letters, digits, _ or -, starting with a letter.",
       "username_taken": "This username is already taken.",
       "email_invalid": "Invalid e-mail address.",
@@ -540,6 +543,7 @@
       "map_invalid": "Map {{id}} skipped: invalid data ({{detail}}).",
       "unsupported_command": "Event command {{code}} not supported yet ({{count}} occurrence(s)): it will be skipped in game.",
       "plugin_command": "Plugin command ({{code}}, {{count}} occurrence(s)): plugins are not supported.",
+      "scripts": "Map {{id}}: {{count}} event(s) contain scripts ({{events}}). They will run on the server: review them before playing if the archive is not yours.",
       "database_file": "{{file}} is not imported here: use the database import.",
       "nothing": "No recognised content in the archive.",
       "enemy_sprite": "Enemy \"{{name}}\": its battle image is not a character sheet; a default appearance is used."
@@ -804,6 +808,7 @@
     "link": "Link in chat"
   },
   "notify": {
+    "role_changed": "Your role is now: {{role}}.",
     "item_gained": "Obtained: {{name}} ×{{count}}",
     "item_lost": "Lost: {{name}} ×{{count}}",
     "gold_gained": "+{{amount}} {{currency}}",

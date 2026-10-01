@@ -123,6 +123,48 @@ test('area of interest: far players are not sent, and appear when they come clos
   near.socket.close();
 });
 
+test('the game socket refuses pages of another site (cross-site WebSocket hijacking)', async () => {
+  const p = await newPlayer('Origin1');
+  p.socket.close();
+  const open = (origin: string) =>
+    new Promise<string>((resolve) => {
+      const s = connect(server.url, { transports: ['websocket'], reconnection: false, extraHeaders: { cookie: p.client.cookieHeader(), origin } });
+      s.on('enterWorld', () => {
+        s.close();
+        resolve('entered');
+      });
+      s.on('connect_error', (e) => {
+        s.close();
+        resolve(`refused: ${e.message}`);
+      });
+    });
+  assert.match(await open('https://evil.example'), /^refused/);
+  assert.equal(await open(server.url), 'entered');
+});
+
+test('an exception in a socket handler is logged, the server keeps serving', async () => {
+  const p = await newPlayer('Crash1');
+  const world = server.ctx.world;
+  const original = world.action.bind(world);
+  const errors: unknown[] = [];
+  const log = console.error;
+  console.error = (...args: unknown[]) => errors.push(args);
+  world.action = () => {
+    throw new Error('boom');
+  };
+  try {
+    p.socket.emit('action');
+    // The same connection still answers afterwards.
+    const pong = await p.socket.timeout(2000).emitWithAck('ping', Date.now());
+    assert.equal(typeof pong, 'number');
+    assert.ok(errors.length > 0);
+  } finally {
+    world.action = original;
+    console.error = log;
+    p.socket.close();
+  }
+});
+
 test('automatic backups keep the latest copies', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'caranille-backups-'));
   try {

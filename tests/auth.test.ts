@@ -93,6 +93,36 @@ test('repeated failures lock the account and the address with escalating delays'
   assert.equal(throttle.lockedFor('user:bob'), 2000);
 });
 
+test('with a setup code, only who knows it can register the first (administrator) account', async () => {
+  const { accounts } = setup();
+  const auth = new AuthService(accounts, 4, undefined, 's3cret-code');
+  assert.equal(auth.needsSetupCode(), true);
+  const intruder = await auth.register(input('Intruder'), 'en');
+  assert.equal(!intruder.ok && intruder.errorKey, 'error.auth.setup_code');
+  assert.equal((await auth.register(input('Guess'), 'en', 'wrong')).ok, false);
+  assert.equal(accounts.count(), 0);
+  const owner = await auth.register(input('Owner'), 'en', ' s3cret-code ');
+  assert.ok(owner.ok && owner.account.role === 'admin');
+  // Later accounts need no code and are players.
+  assert.equal(auth.needsSetupCode(), false);
+  const player = await auth.register(input('Player'), 'en');
+  assert.ok(player.ok && player.account.role === 'player');
+});
+
+test('a successful login does not reset the failures of the address', async () => {
+  const throttle = new LoginThrottle({ maxFailures: 3, lockMs: 1000 });
+  const { auth } = setup(throttle);
+  await auth.register(input('Alice'), 'en');
+  await auth.register(input('Mallory', 'mallory@example.com'), 'en');
+  // Guesses on Alice, interleaved with logins into the guesser's own account.
+  await auth.login('Alice', 'guess 1', '6.6.6.6');
+  await auth.login('Alice', 'guess 2', '6.6.6.6');
+  assert.ok((await auth.login('Mallory', 'correct horse', '6.6.6.6')).ok);
+  await auth.login('Bob', 'guess 3', '6.6.6.6');
+  const locked = await auth.login('Mallory', 'correct horse', '6.6.6.6');
+  assert.equal(!locked.ok && locked.errorKey, 'error.auth.too_many_attempts');
+});
+
 test('banned accounts cannot log in until the ban expires', async () => {
   const { auth, db, accounts } = setup();
   await auth.register(input('Alice'), 'en');

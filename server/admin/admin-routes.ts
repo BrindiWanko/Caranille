@@ -121,6 +121,7 @@ export function adminRouter(ctx: ServerContext): Router {
     if (!isRole(role) || !ctx.admin.account(id)) return fail(res, 400, 'error.admin.invalid');
     if (id === me(res).id) return fail(res, 400, 'error.admin.self');
     ctx.admin.setRole(id, role as AccountRole);
+    world.setAccountRole(id, role as AccountRole);
     log(res, 'role', `account:${id}`, { role });
     res.json({ ok: true });
   });
@@ -144,7 +145,13 @@ export function adminRouter(ctx: ServerContext): Router {
 
   router.post('/accounts/:id/unban', (req, res) => {
     const id = Number(req.params.id);
-    if (!ctx.admin.account(id)) return fail(res, 404, 'error.admin.not_found');
+    const target = ctx.admin.account(id);
+    if (!target) return fail(res, 404, 'error.admin.not_found');
+    if (hasRole(target.role, me(res).role)) return fail(res, 403, 'error.admin.rank');
+    // A moderator may only lift what a moderator could have given (not a permanent or longer ban).
+    if (!isAdmin(res) && target.bannedUntil !== null && target.bannedUntil > sqlDate(Date.now() + MODERATOR_MAX_BAN_MINUTES * 60_000)) {
+      return fail(res, 403, 'error.admin.ban_too_long');
+    }
     ctx.admin.setBan(id, null, null);
     log(res, 'unban', `account:${id}`);
     res.json({ ok: true });
@@ -167,7 +174,9 @@ export function adminRouter(ctx: ServerContext): Router {
 
   router.post('/accounts/:id/unmute', (req, res) => {
     const id = Number(req.params.id);
-    if (!ctx.admin.account(id)) return fail(res, 404, 'error.admin.not_found');
+    const target = ctx.admin.account(id);
+    if (!target) return fail(res, 404, 'error.admin.not_found');
+    if (hasRole(target.role, me(res).role)) return fail(res, 403, 'error.admin.rank');
     ctx.admin.setMute(id, null, null);
     log(res, 'unmute', `account:${id}`);
     res.json({ ok: true });
@@ -189,6 +198,8 @@ export function adminRouter(ctx: ServerContext): Router {
     if (!ctx.admin.account(id)) return fail(res, 404, 'error.admin.not_found');
     const password = randomBytes(9).toString('base64url');
     ctx.admin.setPasswordHash(id, await bcrypt.hash(password, ctx.config.production ? 11 : 4));
+    // Whoever knew the old password is logged out of the site too (the caller keeps its own session).
+    ctx.sessionStore.destroyAccountSessions(id, id === me(res).id ? req.sessionID : '');
     world.kickAccount(id, 'error.net.kicked');
     log(res, 'reset_password', `account:${id}`);
     res.json({ ok: true, password });

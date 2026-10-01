@@ -10,13 +10,16 @@
  *   map of transfer commands, and keeps the tree structure;
  * - reports what could not be converted: unsupported event commands (by code),
  *   plugin commands, missing images, database files (imported with the
- *   database step), invalid maps.
+ *   database step), invalid maps;
+ * - warns about the scripts the maps contain (script commands, script
+ *   conditions and script operands): they will run on the server once the
+ *   maps are played, so an archive of unknown origin must be reviewed.
  *
  * Maps and events use the same structure as the engine's own format, so most
  * content is taken as is; the engine-specific `mmo` block gets default values.
  */
 import { isValidSpawns } from '../../shared/combat.js';
-import { Cmd, type EventCommand, type GameEvent } from '../../shared/events.js';
+import { BranchType, Cmd, type EventCommand, type GameEvent } from '../../shared/events.js';
 import type { TilesetData } from '../../shared/database.js';
 import { MAP_LAYERS, NO_AUDIO, type AudioRef, type MapData, type MapInfo } from '../../shared/map.js';
 import { validateMap } from '../../shared/map-validation.js';
@@ -56,6 +59,14 @@ export const SUPPORTED_COMMANDS: ReadonlySet<number> = new Set([
 /** Codes of plugin commands, reported separately. */
 const PLUGIN_COMMANDS = new Set([356, 357]);
 
+/** Tells whether a command carries script code run by the sandbox. */
+export function isScriptCommand(cmd: EventCommand): boolean {
+  if (cmd.code === Cmd.Script) return true;
+  if (cmd.code === Cmd.If) return cmd.parameters[0] === BranchType.Script;
+  // Control variables with a script operand (operand type 4).
+  return cmd.code === Cmd.ControlVariables && cmd.parameters[3] === 4;
+}
+
 const int = (v: unknown, fallback: number, min: number, max: number): number =>
   Number.isInteger(v) && (v as number) >= min && (v as number) <= max ? (v as number) : fallback;
 const str = (v: unknown, max = 200): string => (typeof v === 'string' ? v.slice(0, max) : '');
@@ -90,12 +101,14 @@ function projectRoot(names: string[]): string | null {
  * @param tilesetId - Tileset id in the engine.
  * @param remapMap - New id of a map referenced by a transfer command.
  * @param unsupported - Receives the codes of commands the interpreter does not run.
+ * @param scripts - Receives the names of the events that contain scripts.
  */
 export function convertMap(
   raw: Record<string, unknown>,
   tilesetId: number,
   remapMap: (id: number) => number | undefined,
   unsupported: Map<number, number>,
+  scripts: string[] = [],
 ): MapData {
   const width = int(raw.width, 1, 1, 256);
   const height = int(raw.height, 1, 1, 256);
@@ -113,10 +126,12 @@ export function convertMap(
       events.push(null);
       continue;
     }
+    let hasScript = false;
     const pages = e.pages.map((page) => {
       const list: EventCommand[] = (Array.isArray(page.list) ? page.list : []).map((c) => {
         const cmd: EventCommand = { code: int(c?.code, 0, 0, 99_999), indent: int(c?.indent, 0, 0, 100), parameters: Array.isArray(c?.parameters) ? [...c.parameters] : [] };
         if (!SUPPORTED_COMMANDS.has(cmd.code)) unsupported.set(cmd.code, (unsupported.get(cmd.code) ?? 0) + 1);
+        if (isScriptCommand(cmd)) hasScript = true;
         // Transfers to a map of the project point to its new id.
         if (cmd.code === Cmd.TransferPlayer && cmd.parameters[0] === 0) {
           const target = remapMap(Number(cmd.parameters[1]));
@@ -153,6 +168,7 @@ export function convertMap(
         list,
       };
     });
+    if (hasScript) scripts.push(str(e.name) || `EV${id}`);
     events.push({ id, name: str(e.name) || `EV${id}`, note: str(e.note, 5000), x: int(e.x, 0, 0, width - 1), y: int(e.y, 0, 0, height - 1), pages });
   }
   return {
@@ -261,11 +277,15 @@ export function importProject(ctx: ServerContext, files: ZipEntry[], accountId: 
       continue;
     }
     const tilesetId = tilesetIds.get(int(raw.tilesetId, 0, 0, 9999)) ?? ctx.gameData.list('tileset')[0]?.id ?? 1;
-    const map = convertMap(raw, tilesetId, (id) => report.mapIds[id], unsupported);
+    const scripts: string[] = [];
+    const map = convertMap(raw, tilesetId, (id) => report.mapIds[id], unsupported, scripts);
     const error = validateMap(map, existingTileset);
     if (error) {
       report.warnings.push({ key: 'import.warning.map_invalid', params: { id: oldId, detail: error } });
       continue;
+    }
+    if (scripts.length > 0) {
+      report.warnings.push({ key: 'import.warning.scripts', params: { id: report.mapIds[oldId]!, count: scripts.length, events: scripts.slice(0, 10).join(', ') } });
     }
     const parentOld = int(info.parentId, 0, 0, 99_999);
     const entry: MapInfo = {

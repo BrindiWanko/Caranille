@@ -62,6 +62,13 @@ export interface NewAccount {
   locale: string;
 }
 
+/** Thrown when the first account is created without the server's setup code. */
+export class SetupCodeError extends Error {
+  constructor() {
+    super('The first account needs the setup code');
+  }
+}
+
 /** Thrown when a unique column (username or email) is already taken. */
 export class DuplicateAccountError extends Error {
   constructor(public readonly field: 'username' | 'email') {
@@ -119,14 +126,19 @@ export class AccountRepository {
    * cannot both observe an empty table and both become admin.
    *
    * @param data - Validated account fields with an already-computed hash.
+   * @param mayBeFirst - `false` when the caller did not give the setup code: the
+   *   account is then refused if it would be the first one (the administrator).
    * @returns The created account.
    * @throws {DuplicateAccountError} If the username or email is taken.
+   * @throws {SetupCodeError} If the account would be the first one and `mayBeFirst` is `false`.
    */
-  create(data: NewAccount): Account {
+  create(data: NewAccount, mayBeFirst = true): Account {
     const insert = this.db.transaction((): number => {
       if (this.byUsername.get(data.username)) throw new DuplicateAccountError('username');
       if (this.byEmail.get(data.email)) throw new DuplicateAccountError('email');
-      const role: AccountRole = this.countStmt.get() === 0 ? 'admin' : 'player';
+      const first = this.countStmt.get() === 0;
+      if (first && !mayBeFirst) throw new SetupCodeError();
+      const role: AccountRole = first ? 'admin' : 'player';
       return Number(this.insertStmt.run(data.username, data.email, data.passwordHash, role, data.locale).lastInsertRowid);
     });
     return this.findById(insert.immediate())!;

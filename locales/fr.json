@@ -22,6 +22,7 @@
   },
   "auth": {
     "field": {
+      "setup_code": "Code d'installation",
       "username": "Nom de compte",
       "email": "Adresse e-mail",
       "password": "Mot de passe",
@@ -38,6 +39,7 @@
       "have_account": "Déjà inscrit ?",
       "username_hint": "3 à 20 caractères : lettres, chiffres, _ et -, en commençant par une lettre.",
       "password_hint": "Au moins 8 caractères.",
+      "setup_code_hint": "Affiché dans le journal du serveur au démarrage (ou défini par la variable SETUP_CODE).",
       "first_admin": "C'est le premier compte de ce serveur : il recevra le rôle d'administrateur."
     },
     "logout": "Se déconnecter",
@@ -66,6 +68,7 @@
       "server": "Une erreur inattendue est survenue. Veuillez réessayer plus tard."
     },
     "auth": {
+      "setup_code": "Code d'installation incorrect : il est affiché dans le journal du serveur.",
       "username_invalid": "Nom de compte invalide : 3 à 20 lettres, chiffres, _ ou -, en commençant par une lettre.",
       "username_taken": "Ce nom de compte est déjà pris.",
       "email_invalid": "Adresse e-mail invalide.",
@@ -540,6 +543,7 @@
       "map_invalid": "Carte {{id}} ignorée : données invalides ({{detail}}).",
       "unsupported_command": "Commande d'événement {{code}} pas encore prise en charge ({{count}} occurrence(s)) : elle sera ignorée en jeu.",
       "plugin_command": "Commande de plugin ({{code}}, {{count}} occurrence(s)) : les plugins ne sont pas pris en charge.",
+      "scripts": "Carte {{id}} : {{count}} événement(s) contiennent des scripts ({{events}}). Ils s'exécuteront sur le serveur : vérifiez-les avant de jouer si l'archive ne vient pas de vous.",
       "database_file": "{{file}} n'est pas importé ici : utilisez l'import de la base de données.",
       "nothing": "Aucun contenu reconnu dans l'archive.",
       "enemy_sprite": "Ennemi « {{name}} » : l'image de combat n'est pas une planche de personnage, une apparence par défaut lui est donnée."
@@ -804,6 +808,7 @@
     "link": "Lien dans le chat"
   },
   "notify": {
+    "role_changed": "Votre rôle est maintenant : {{role}}.",
     "item_gained": "Obtenu : {{name}} ×{{count}}",
     "item_lost": "Perdu : {{name}} ×{{count}}",
     "gold_gained": "+{{amount}} {{currency}}",

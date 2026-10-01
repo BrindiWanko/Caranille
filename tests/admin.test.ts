@@ -132,6 +132,70 @@ test('criterion: a moderator moderates a player and reads its trade history', as
   friend.socket.close();
 });
 
+test('a moderator cannot lift an administrator sanction, nor sanctions of its peers', async () => {
+  const boss = await account('Boss4');
+  server.ctx.accounts.setRole(boss.id, 'admin');
+  const mod = await account('Modo3');
+  server.ctx.accounts.setRole(mod.id, 'moderator');
+  const peer = await account('Modo4');
+  server.ctx.accounts.setRole(peer.id, 'moderator');
+  const cheat = await account('Cheater');
+
+  // A permanent ban given by an administrator stays.
+  assert.equal((await boss.api('POST', `/accounts/${cheat.id}/ban`, { permanent: true })).status, 200);
+  assert.equal((await mod.api('POST', `/accounts/${cheat.id}/unban`)).status, 403);
+  assert.ok(server.ctx.admin.account(cheat.id)!.bannedUntil);
+  // A ban a moderator could have given can be lifted by a moderator.
+  assert.equal((await boss.api('POST', `/accounts/${cheat.id}/ban`, { minutes: 60 })).status, 200);
+  assert.equal((await mod.api('POST', `/accounts/${cheat.id}/unban`)).status, 200);
+  assert.equal(server.ctx.admin.account(cheat.id)!.bannedUntil, null);
+
+  // Sanctions of an equal or higher rank are out of reach.
+  server.ctx.admin.setMute(peer.id, '9999-12-31 23:59:59', null);
+  assert.equal((await mod.api('POST', `/accounts/${peer.id}/unmute`)).status, 403);
+  assert.equal((await boss.api('POST', `/accounts/${peer.id}/unmute`)).status, 200);
+});
+
+test('a promotion applies at once in game, a demotion too (and frees the editor)', async () => {
+  const boss = await account('Boss6');
+  server.ctx.accounts.setRole(boss.id, 'admin');
+  const member = await account('Member');
+  const p = await play(member, 'Member');
+  const roles: string[] = [];
+  p.socket.on('roleChanged', ({ role }) => roles.push(role));
+
+  assert.equal((await boss.api('POST', `/accounts/${member.id}/role`, { role: 'admin' })).status, 200);
+  await until(() => roles.includes('admin'));
+  assert.equal(p.session.socket.data.role, 'admin');
+  // The editor answers right away, without logging in again.
+  const csrf = await member.client.csrf('/characters');
+  assert.equal((await member.client.request('/api/editor/bootstrap', { headers: { 'x-csrf-token': csrf } })).status, 200);
+  server.ctx.editLocks.acquire(1, member.id, 'Member');
+
+  assert.equal((await boss.api('POST', `/accounts/${member.id}/role`, { role: 'player' })).status, 200);
+  await until(() => roles.at(-1) === 'player');
+  assert.equal(p.session.socket.data.role, 'player');
+  assert.equal(server.ctx.editLocks.holder(1), undefined, 'the edit lock is released');
+  assert.equal((await member.client.request('/api/editor/bootstrap', { headers: { 'x-csrf-token': csrf } })).status, 403);
+  p.socket.close();
+});
+
+test('resetting a password logs the account out of every web session', async () => {
+  const boss = await account('Boss5');
+  server.ctx.accounts.setRole(boss.id, 'admin');
+  const victim = await account('Victim');
+  assert.equal((await victim.client.request('/characters')).status, 200);
+
+  const reset = await boss.api<{ password: string }>('POST', `/accounts/${victim.id}/reset-password`);
+  assert.equal(reset.status, 200);
+  // The old session (maybe a thief's) is gone: the next page asks to log in.
+  assert.equal((await victim.client.request('/characters')).status, 303);
+
+  // An administrator resetting its own password keeps its current session.
+  assert.equal((await boss.api('POST', `/accounts/${boss.id}/reset-password`)).status, 200);
+  assert.equal((await boss.client.request('/characters')).status, 200);
+});
+
 test('game tools, sales log and backups (administrators)', async () => {
   const boss2 = await account('Boss3');
   server.ctx.accounts.setRole(boss2.id, 'admin');

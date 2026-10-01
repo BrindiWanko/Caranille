@@ -37,20 +37,39 @@ export function sniffType(data: Buffer): UploadType | null {
   return null;
 }
 
+/** Named character references that can hide a dangerous scheme or separator. */
+const NAMED_REFERENCES: Record<string, string> = { colon: ':', tab: '\t', newline: '\n', sol: '/', lpar: '(', rpar: ')', quot: '"', apos: "'", lt: '<', gt: '>', amp: '&' };
+
+/** Decodes the character references of a text (`&#106;`, `&#x6A;`, `&colon;`...). */
+function decodeReferences(text: string): string {
+  return text.replace(/&(?:#(\d{1,7})|#x([0-9a-f]{1,6})|([a-z]+));?/gi, (all, dec: string | undefined, hex: string | undefined, name: string | undefined) => {
+    const code = dec !== undefined ? Number(dec) : hex !== undefined ? Number.parseInt(hex, 16) : -1;
+    if (code >= 0) return code <= 0x10ffff ? String.fromCodePoint(code) : '';
+    return NAMED_REFERENCES[name!.toLowerCase()] ?? all;
+  });
+}
+
 /**
  * Tells whether an SVG document is safe to serve from the game's origin: no
  * scripts, no event handler attributes, no embedded HTML, no external or
- * `javascript:` links, no entity declarations.
+ * `javascript:` links, no animation rewriting a link, no entity declarations.
+ * Character references are decoded first so they cannot hide a forbidden word.
+ * (Uploads are also served with a sandboxing Content-Security-Policy.)
  * @param svg - SVG source.
  */
 export function isSafeSvg(svg: string): boolean {
-  const lower = svg.toLowerCase();
-  if (/<script|<foreignobject|<iframe|<object|<embed|<!entity|<!doctype/.test(lower)) return false;
-  if (/\son[a-z]+\s*=/.test(lower)) return false;
-  if (/javascript:|data:text\/html|vbscript:/.test(lower)) return false;
+  const lower = decodeReferences(svg).toLowerCase();
+  // Without spaces and control characters: `java\tscript:` is still `javascript:` for a browser.
+  const compact = lower.replace(/[\s\u0000-\u001f]+/g, '');
+  if (/<script|<foreignobject|<iframe|<object|<embed|<!entity|<!doctype|<handler|<listener/.test(lower)) return false;
+  if (/[\s/"']on[a-z]+\s*=/.test(lower)) return false;
+  if (/javascript:|data:text\/html|vbscript:|data:image\/svg/.test(compact)) return false;
+  // Animations may not rewrite links or event attributes.
+  if (/attributename\s*=\s*["']?\s*(?:xlink:)?(?:href|on)/.test(lower)) return false;
   // Links may only point inside the document (#id).
-  for (const m of lower.matchAll(/(?:xlink:)?href\s*=\s*["']([^"']*)["']/g)) if (!m[1]!.startsWith('#')) return false;
-  if (/url\(\s*["']?(?!#)/.test(lower)) return false;
+  for (const m of lower.matchAll(/(?:xlink:)?href\s*=\s*["']([^"']*)["']/g)) if (!m[1]!.trim().startsWith('#')) return false;
+  if (/(?:xlink:)?href\s*=\s*[^"'\s]/.test(lower)) return false;
+  if (/url\(\s*["']?(?!#)/.test(lower) || /@import/.test(lower)) return false;
   return true;
 }
 

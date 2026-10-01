@@ -35,13 +35,24 @@ function shutdown(signal: string): void {
   void io.close();
   httpServer.close(() => {
     closeContext(ctx);
-    process.exit(0);
+    process.exit();
   });
   // Do not hang forever on lingering keep-alive connections.
   setTimeout(() => {
     closeContext(ctx);
-    process.exit(0);
+    process.exit();
   }, 3000).unref();
 }
+// A forgotten promise rejection is logged; it leaves no half-done state behind.
+process.on('unhandledRejection', (reason) => {
+  console.error('[caranille] unhandled promise rejection', reason);
+});
+// Any other unexpected exception leaves the process in an unknown state: save and stop
+// cleanly (closing the database) so that a process manager restarts a sound server.
+process.on('uncaughtException', (err) => {
+  console.error('[caranille] uncaught exception', err);
+  process.exitCode = 1;
+  shutdown('uncaughtException');
+});
 process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));

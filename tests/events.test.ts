@@ -154,6 +154,19 @@ test('scripts run in a sandbox: no host objects, no code generation, bounded tim
   assert.equal(evaluateScript('this is not javascript', state), undefined);
 });
 
+test('scripts cannot freeze or exhaust the server: promise chains and memory bombs are stopped', { timeout: 15_000 }, async () => {
+  const state: ScriptState = { variables: {}, switches: {}, selfSwitches: {}, gold: 0, level: 1, items: {}, player: { name: 'Bob', mapId: 1, x: 0, y: 0 } };
+  const started = Date.now();
+  assert.deepEqual(runScript('Promise.resolve().then(function f() { Promise.resolve().then(f); });', state), []);
+  assert.ok(Date.now() - started < 1000);
+  // The server's event loop still turns (it would never reach this point with the chain running).
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(runScript('let a = "x"; while (true) a += a;', state), []);
+  assert.deepEqual(runScript('const a = []; while (true) a.push(new Array(1e5).fill(1));', state), []);
+  // Later scripts still run normally.
+  assert.deepEqual(runScript('setV(1, 2);', state), [{ op: 'variable', id: 1, value: 2 }]);
+});
+
 // --- Criterion over sockets ----------------------------------------------------
 
 let server: TestServer;

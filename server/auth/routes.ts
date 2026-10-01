@@ -74,7 +74,7 @@ export function authRouter(ctx: ServerContext): Router {
       res.redirect(303, AFTER_LOGIN_PATH);
       return;
     }
-    res.render('auth/register', { errorKey: null, values: {}, isFirstAccount: ctx.accounts.count() === 0 });
+    res.render('auth/register', { errorKey: null, values: {}, isFirstAccount: ctx.accounts.count() === 0, needsSetupCode: ctx.auth.needsSetupCode() });
   });
 
   router.post('/register', verifyCsrf, async (req, res) => {
@@ -83,9 +83,10 @@ export function authRouter(ctx: ServerContext): Router {
     const result = await ctx.auth.register(
       { ...values, password: field(req, 'password'), passwordConfirm: field(req, 'passwordConfirm') },
       locale,
+      field(req, 'setupCode'),
     );
     if (!result.ok) {
-      res.status(400).render('auth/register', { errorKey: result.errorKey, values, isFirstAccount: ctx.accounts.count() === 0 });
+      res.status(400).render('auth/register', { errorKey: result.errorKey, values, isFirstAccount: ctx.accounts.count() === 0, needsSetupCode: ctx.auth.needsSetupCode() });
       return;
     }
     if (result.account.role === 'admin') console.log(`[caranille] first account "${result.account.username}" registered as admin`);

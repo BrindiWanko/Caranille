@@ -29,6 +29,7 @@ import { Trigger } from '../../shared/events.js';
 import { isValidPosition } from '../../shared/map.js';
 import { isCounter } from '../../shared/passability.js';
 import type {
+  AccountRole,
   ClientToServerEvents,
   EnterWorldPayload,
   InterServerEvents,
@@ -203,11 +204,20 @@ export class World {
     this.instances = new InstanceService(this);
     this.raids = new RaidService(this);
     this.loadScopes();
+    // A failing round is logged and skipped: one bad map or monster must not stop the world.
+    const every = (ms: number, name: string, run: () => void) =>
+      setInterval(() => {
+        try {
+          run();
+        } catch (err) {
+          console.error(`[caranille] ${name} failed`, err);
+        }
+      }, ms);
     this.timers.push(
-      setInterval(() => this.saveAll(), AUTOSAVE_MS),
-      setInterval(() => this.tick(), 1000 / TICK_HZ),
-      setInterval(() => this.runner.moveEvents(this.players.values()), 100),
-      setInterval(() => this.combat.tick(), CombatSystem.TICK_MS),
+      every(AUTOSAVE_MS, 'autosave', () => this.saveAll()),
+      every(1000 / TICK_HZ, 'world tick', () => this.tick()),
+      every(100, 'event movement', () => this.runner.moveEvents(this.players.values())),
+      every(CombatSystem.TICK_MS, 'combat tick', () => this.combat.tick()),
     );
     for (const t of this.timers) t.unref();
   }
@@ -515,6 +525,20 @@ export class World {
   }
 
   /** Disconnects every session of an account (ban, kick, password reset). */
+  /**
+   * Applies a new role to the connected characters of an account, so that it
+   * takes effect without logging in again (the web pages and APIs already read
+   * the role from the database on every request).
+   */
+  setAccountRole(accountId: number, role: AccountRole): void {
+    for (const p of this.players.values()) {
+      if (p.accountId !== accountId) continue;
+      p.socket.data.role = role;
+      p.socket.emit('roleChanged', { role });
+    }
+    if (role !== 'admin') this.ctx.editLocks.releaseAll(accountId);
+  }
+
   kickAccount(accountId: number, key: string): void {
     for (const p of [...this.players.values()]) {
       if (p.accountId !== accountId) continue;

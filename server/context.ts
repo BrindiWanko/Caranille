@@ -29,6 +29,7 @@ import { CharacterService } from './game/character-service.js';
 import { InventoryService } from './game/inventory-service.js';
 import { World } from './game/world.js';
 import { DEFAULT_SETTINGS } from '../shared/settings.js';
+import { randomBytes } from 'node:crypto';
 import { existsSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { RESTORE_FILE } from './admin/admin-routes.js';
@@ -108,12 +109,19 @@ export function createContext(config: Config, options: ContextOptions = {}): Ser
   const characters = new CharacterRepository(db);
   const inventory = new InventoryRepository(db);
   const secret = config.sessionSecret ?? settings.secret('session');
+  // Whoever registers first becomes administrator: on a public server, that first
+  // registration is protected by a code only the person running the server can read.
+  let setupCode = config.setupCode ?? null;
+  if (setupCode === null && config.production && accounts.count() === 0) {
+    setupCode = randomBytes(9).toString('base64url');
+    console.log(`[caranille] no account yet: the first account (administrator) needs the setup code ${setupCode}`);
+  }
   const ctx: ServerContext = {
     config,
     db,
     settings,
     accounts,
-    auth: new AuthService(accounts, options.bcryptRounds ?? 11),
+    auth: new AuthService(accounts, options.bcryptRounds ?? 11, undefined, setupCode),
     resources,
     gameData,
     characters,

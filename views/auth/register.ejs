@@ -34,6 +34,13 @@
         <span><%= t('auth.field.password_confirm') %></span>
         <input name="passwordConfirm" type="password" autocomplete="new-password" required minlength="8">
       </label>
+      <% if (needsSetupCode) { %>
+        <label>
+          <span><%= t('auth.field.setup_code') %></span>
+          <input name="setupCode" autocomplete="off" required aria-describedby="setup-code-hint">
+          <small id="setup-code-hint"><%= t('auth.register.setup_code_hint') %></small>
+        </label>
+      <% } %>
       <button type="submit" class="button primary"><%= t('auth.register.submit') %></button>
     </form>
     <p class="form-footer"><%= t('auth.register.have_account') %> <a href="/login"><%= t('site.login') %></a></p>

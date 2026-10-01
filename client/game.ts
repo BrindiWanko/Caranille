@@ -93,7 +93,7 @@ export class Game implements MenuHost {
   private system: EnterWorldPayload['system'];
   private currencyName: string;
   private character: PlayerCharacterInfo;
-  private readonly role: EnterWorldPayload['role'];
+  private role: EnterWorldPayload['role'];
   private readonly startedAt = Date.now();
   private zoom = 1;
   private dpr = 1;
@@ -649,6 +649,14 @@ export class Game implements MenuHost {
       this.hud.setPlayer(this.character);
       if (update.mp !== undefined) this.refreshHotbar();
       this.menus.status.refresh();
+    });
+    this.socket.on('roleChanged', ({ role }) => {
+      this.role = role;
+      // The administration window and its menu entries follow the new role.
+      if (role !== 'admin' && this.windows.isOpen(this.menus.admin)) this.windows.close(this.menus.admin);
+      this.buildMenuBar();
+      this.hud.notify(t('notify.role_changed', { role: tDynamic(`auth.role.${role}`) }));
+      this.audio.play('ok');
     });
     this.socket.on('skills', (payload) => {
       this.skills = payload;

@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 import { crc32, deflateRawSync } from 'node:zlib';
 import { convertCharacter16, convertChipset16, convertLegacyAutotile, convertLegacyTileset, tilesetSheetNames } from '../shared/conversions.js';
-import { Cmd, createPage } from '../shared/events.js';
+import { BranchType, Cmd, createPage } from '../shared/events.js';
 import { createMap, tileAt } from '../shared/map.js';
 import { TILE_ID_A2 } from '../shared/tiles.js';
 import { convertMap, exportMap } from '../server/importers/project.js';
@@ -117,6 +117,15 @@ test('uploads are recognised by content; unsafe SVG and names are refused', () =
   assert.equal(isSafeSvg('<svg onload="x()"></svg>'), false);
   assert.equal(isSafeSvg('<svg><image href="https://evil.example/a.png"/></svg>'), false);
   assert.equal(isSafeSvg('<svg><use href="#a"/></svg>'), true);
+  // Tricks that hide a script from a naive filter.
+  assert.equal(isSafeSvg('<svg/onload="x()"></svg>'), false);
+  assert.equal(isSafeSvg('<svg><a><animate attributeName="href" values="&#106;avascript:alert(1)"/></a></svg>'), false);
+  assert.equal(isSafeSvg('<svg><a href="java&#x09;script:alert(1)">x</a></svg>'), false);
+  assert.equal(isSafeSvg('<svg><a href="&#106;avascript&colon;alert(1)">x</a></svg>'), false);
+  assert.equal(isSafeSvg('<svg><a href=javascript:alert(1)>x</a></svg>'), false);
+  assert.equal(isSafeSvg('<svg><style>@import "https://evil.example/x.css";</style></svg>'), false);
+  assert.equal(isSafeSvg('<svg><set attributeName="onmouseover" to="alert(1)"/></svg>'), false);
+  assert.equal(isSafeSvg('<svg><text>Tom &amp; Jerry &#233;t&#233;</text></svg>'), true);
   assert.equal(sanitizeName('../../etc/$Hero!.png'), '$Hero!');
   assert.equal(guessKind('Outside_A2', 768, 576), 'tilesets');
   assert.equal(guessKind('Chipset', 480, 256), 'tilesets');
@@ -142,6 +151,21 @@ test('map export and re-import give the same map', () => {
   assert.deepEqual(back.data, map.data);
   assert.equal(back.displayName, 'Test');
   assert.deepEqual(back.events[1], map.events[1]);
+});
+
+test('imported maps report the events that contain scripts (they run on the server)', () => {
+  const map = createMap(3, 2, 1);
+  const page = (list: unknown[]) => ({ ...createPage(), list });
+  map.events = [
+    null,
+    { id: 1, name: 'Script', note: '', x: 0, y: 0, pages: [page([{ code: Cmd.Script, indent: 0, parameters: ['setV(1, 2)'] }, { code: 0, indent: 0, parameters: [] }])] },
+    { id: 2, name: 'Branch', note: '', x: 1, y: 0, pages: [page([{ code: Cmd.If, indent: 0, parameters: [BranchType.Script, 'gold() > 5'] }, { code: 0, indent: 0, parameters: [] }])] },
+    { id: 3, name: 'Operand', note: '', x: 2, y: 0, pages: [page([{ code: Cmd.ControlVariables, indent: 0, parameters: [1, 1, 0, 4, 'level()'] }, { code: 0, indent: 0, parameters: [] }])] },
+    { id: 4, name: 'Plain', note: '', x: 0, y: 1, pages: [page([{ code: Cmd.ControlVariables, indent: 0, parameters: [1, 1, 0, 0, 5] }, { code: 0, indent: 0, parameters: [] }])] },
+  ] as typeof map.events;
+  const scripts: string[] = [];
+  convertMap(exportMap(map), 1, () => undefined, new Map(), scripts);
+  assert.deepEqual(scripts, ['Script', 'Branch', 'Operand']);
 });
 
 // --- Project import through the API ---------------------------------------------------------

@@ -52,6 +52,8 @@ export interface ServerToClientEvents {
   inventory: (payload: InventoryPayload) => void;
   /** Changed values of the player's own character (vitals, gold, level...). */
   playerUpdate: (payload: Partial<PlayerCharacterInfo>) => void;
+  /** The account's role was changed by an administrator: the interface adapts at once. */
+  roleChanged: (payload: { role: AccountRole }) => void;
   /** Short notification for the player (item obtained, level up...); `key` is a translation key. */
   notify: (payload: { key: string; params?: Record<string, string | number>; icon?: number }) => void;
   /**

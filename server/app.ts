@@ -28,6 +28,18 @@ export function createApp(ctx: ServerContext): Express {
   const app = express();
   app.disable('x-powered-by');
   if (ctx.config.trustProxy) app.set('trust proxy', 1);
+  else {
+    // Behind a proxy without TRUST_PROXY=1, every player seems to come from the proxy's
+    // address: the login limiter would then lock everybody out at once.
+    let warned = false;
+    app.use((req, _res, next) => {
+      if (!warned && req.headers['x-forwarded-for'] !== undefined) {
+        warned = true;
+        console.warn('[caranille] requests come through a proxy (X-Forwarded-For) but TRUST_PROXY is not set: set TRUST_PROXY=1');
+      }
+      next();
+    });
+  }
   app.use(securityHeaders(ctx.config.production));
 
   app.set('view engine', 'ejs');

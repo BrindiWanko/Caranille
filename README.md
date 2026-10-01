@@ -86,7 +86,12 @@ modification.
 
 Le **premier compte inscrit** devient automatiquement administrateur 🎉. Les suivants sont des
 joueurs. Un administrateur peut ensuite nommer des modérateurs ou d'autres administrateurs depuis
-le panel d'administration.
+le panel d'administration (le nouveau rôle s'applique tout de suite, même en jeu).
+
+En production (`NODE_ENV=production`), tant que le serveur n'a aucun compte, l'inscription de ce
+premier compte demande un **code d'installation** : il est affiché dans le journal du serveur au
+démarrage, ou fixé par la variable `SETUP_CODE`. Personne d'autre ne peut ainsi prendre la place de
+l'administrateur sur un serveur fraîchement mis en ligne.
 
 ## 🕹️ Jouer
 
@@ -153,7 +158,8 @@ Variables d'environnement (toutes facultatives) :
 | `DB_PATH` | `data/game.db` | Fichier SQLite |
 | `NODE_ENV` | — | `production` : cookies sécurisés, HSTS, cache |
 | `SESSION_SECRET` | généré et stocké | Secret des sessions |
-| `TRUST_PROXY` | — | `1` derrière un proxy inverse |
+| `TRUST_PROXY` | — | `1` derrière un proxy inverse (obligatoire : sinon tous les joueurs partagent l'IP du proxy pour la limitation des connexions) |
+| `SETUP_CODE` | aléatoire en production | Code demandé à l'inscription du premier compte (administrateur) |
 | `MAX_CHARACTERS` | `4` | Personnages par compte |
 | `BACKUP_HOURS` / `BACKUP_KEEP` | `6` / `10` | Sauvegardes automatiques dans `data/backups/` |
 
@@ -307,7 +313,7 @@ the demo as JSON in `demo/`.
 ## ⚙️ Configuration, 🧪 tests and 🚀 deployment
 
 - Environment variables: `PORT`, `HOST`, `DB_PATH`, `NODE_ENV=production`, `SESSION_SECRET`,
-  `TRUST_PROXY=1`, `MAX_CHARACTERS`, `BACKUP_HOURS`, `BACKUP_KEEP` (see the table above). Game
+  `TRUST_PROXY=1`, `MAX_CHARACTERS`, `BACKUP_HOURS`, `BACKUP_KEEP`, `SETUP_CODE` (see the table above). Game
   settings live in the editor's **System** tab.
 - Tests: `npm test`, `npm run typecheck`, `npm run load-test -- 80 15`.
 - Deployment: `npm ci && npm run build`, run with pm2, nginx in front with WebSocket upgrade

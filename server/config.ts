@@ -14,6 +14,9 @@
  * - `CARANILLE_DEV` (set to `1` by `npm run dev`)
  * - `BACKUP_HOURS` (automatic backups interval, default 6, 0 = off),
  *   `BACKUP_KEEP` (backups kept, default 10)
+ * - `SETUP_CODE` (code asked when registering the first account, which becomes
+ *   administrator; in production without it, a random code is printed in the
+ *   server log at start while the server has no account)
  */
 import { fromRoot } from './paths.js';
 
@@ -37,6 +40,8 @@ export const config = Object.freeze({
   dbPath: fromRoot(process.env.DB_PATH ?? 'data/game.db'),
   trustProxy: process.env.TRUST_PROXY === '1',
   maxCharactersPerAccount: intFromEnv('MAX_CHARACTERS', 4),
+  /** Code protecting the registration of the first (administrator) account. */
+  setupCode: process.env.SETUP_CODE || undefined,
   backupHours: intFromEnv('BACKUP_HOURS', 6),
   backupKeep: intFromEnv('BACKUP_KEEP', 10),
   /** Session lifetime in milliseconds (30 days). */

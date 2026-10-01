@@ -8,6 +8,9 @@
  * Authentication: the Express session middleware runs on the socket.io engine,
  * so the handshake carries the same session as the web pages. Sockets without a
  * logged-in, non-banned account are refused before `connection` fires.
+ * Browsers must also open the connection from the game's own pages: a
+ * handshake whose `Origin` names another site is refused (protection against
+ * cross-site WebSocket hijacking with the visitor's cookie).
  */
 import type { IncomingMessage, Server as HttpServer } from 'node:http';
 import type { Session, SessionData } from 'express-session';
@@ -27,6 +30,27 @@ import { isDirection, isIntIn } from './validate.js';
 /** Typed socket.io server used across the engine. */
 export type GameServer = Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
 
+/**
+ * Tells whether a handshake comes from the game's own origin. Requests without
+ * `Origin` are not sent by a browser page (tools, tests) and are accepted: they
+ * cannot carry a visitor's cookie without the visitor's knowledge.
+ * @param req - Handshake request.
+ * @param trustProxy - Behind a reverse proxy, the public host is in `X-Forwarded-Host`.
+ */
+export function isSameOrigin(req: IncomingMessage, trustProxy: boolean): boolean {
+  const origin = req.headers.origin;
+  if (origin === undefined) return true;
+  let host: string;
+  try {
+    host = new URL(origin).host;
+  } catch {
+    return false;
+  }
+  const forwarded = trustProxy ? req.headers['x-forwarded-host'] : undefined;
+  const expected = (typeof forwarded === 'string' ? forwarded.split(',')[0]!.trim() : undefined) ?? req.headers.host;
+  return host !== '' && host === expected;
+}
+
 /** Handshake request once the session middleware has run. */
 type SessionRequest = IncomingMessage & { session?: Session & Partial<SessionData> };
 
@@ -40,6 +64,7 @@ export function createSocketServer(httpServer: HttpServer, ctx: ServerContext): 
     serveClient: false,
     // Keep payloads small: nothing legitimate in the protocol exceeds this.
     maxHttpBufferSize: 1e6,
+    allowRequest: (req, callback) => callback(null, isSameOrigin(req, ctx.config.trustProxy)),
   });
 
   // Run the Express session middleware on the engine's HTTP handshake requests.
@@ -71,6 +96,19 @@ export function createSocketServer(httpServer: HttpServer, ctx: ServerContext): 
   });
 
   io.on('connection', (socket) => {
+    // socket.io calls handlers outside any try: an exception (or a rejected promise) in one
+    // handler is logged instead of stopping the whole server.
+    const listen = socket.on.bind(socket);
+    socket.on = ((event: string, listener: (...args: unknown[]) => unknown) =>
+      listen(event as never, ((...args: unknown[]) => {
+        const fail = (err: unknown) => console.error(`[caranille] socket handler "${event}" failed`, err);
+        try {
+          const result = listener(...args);
+          if (result instanceof Promise) result.catch(fail);
+        } catch (err) {
+          fail(err);
+        }
+      }) as never)) as typeof socket.on;
     const limiter = new RateLimiter();
     socket.use((_packet, next) => {
       const verdict = limiter.take();
