@@ -198,7 +198,8 @@
       "unavailable": "Invitation impossible",
       "target_in_guild": "{{name}} est déjà dans une guilde",
       "leader_leave": "Confiez d’abord la direction à un autre membre",
-      "bank_full": "La banque de guilde est pleine"
+      "bank_full": "La banque de guilde est pleine",
+      "bank_not_empty": "Videz la banque de guilde avant de dissoudre la guilde"
     },
     "instance": {
       "level": "Niveau insuffisant pour entrer ici",

@@ -221,3 +221,26 @@ test('deleting a guild leader hands the lead over; a character in the game canno
   server.ctx.world.guilds.characterDeleted(heir.session.characterId, 'Heir');
   assert.equal(repo.get(guildId), undefined);
 });
+
+test('the last member cannot end the guild while its bank still holds something', async () => {
+  const solo = await newPlayer('Solo');
+  const repo = server.ctx.guilds;
+  server.ctx.world.changeGold(solo.session, 1200);
+  solo.socket.emit('guildCreate', 'Les Seuls', 'SOL', { shape: 0, pattern: 0, primary: 1, secondary: 2, symbol: 0, symbolColor: 3 });
+  await until(() => solo.guild !== null);
+  const guildId = solo.guild!.id;
+  solo.socket.emit('guildGold', 100);
+  await until(() => solo.guild?.bank.gold === 100);
+
+  solo.socket.emit('guildLeave');
+  await until(() => solo.notes.includes('error.guild.bank_not_empty'));
+  assert.ok(repo.get(guildId), 'the guild is still there');
+  assert.equal(repo.get(guildId)!.gold, 100, 'and so is its gold');
+
+  solo.socket.emit('guildGold', -100);
+  await until(() => solo.guild?.bank.gold === 0);
+  solo.socket.emit('guildLeave');
+  await until(() => solo.guild === null);
+  assert.equal(repo.get(guildId), undefined, 'an empty guild ends with its last member');
+  solo.socket.close();
+});

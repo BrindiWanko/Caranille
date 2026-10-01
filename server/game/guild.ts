@@ -172,8 +172,11 @@ export class GuildService {
     const guildId = p.guild.id;
     const members = this.repo.members(guildId);
     if (p.guild.rank === 0 && members.length > 1) return this.notify(p, 'error.guild.leader_leave');
-    if (members.length <= 1) this.repo.disband(guildId);
-    else {
+    if (members.length <= 1) {
+      // Disbanding deletes the bank with the guild: the member takes their things back first.
+      if ((this.repo.get(guildId)?.gold ?? 0) > 0 || this.repo.bankItems(guildId).length > 0) return this.notify(p, 'error.guild.bank_not_empty');
+      this.repo.disband(guildId);
+    } else {
       this.repo.removeMember(p.characterId);
       this.repo.log(guildId, p.characterId, 'left');
     }

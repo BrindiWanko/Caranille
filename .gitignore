@@ -9,3 +9,6 @@ uploads/*
 prompt.md
 step.txt
 *.md
+
+# E2E test accounts
+tests/e2e-accounts.local.txt

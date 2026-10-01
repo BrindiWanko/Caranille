@@ -19,7 +19,7 @@
       "port": 3009,
       "env": {
         "PORT": "3009",
-        "DB_PATH": "data/test10.db"
+        "DB_PATH": "data/test-e2e.db"
       }
     },
     {

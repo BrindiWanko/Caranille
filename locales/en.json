@@ -198,7 +198,8 @@
       "unavailable": "Cannot invite this player",
       "target_in_guild": "{{name}} is already in a guild",
       "leader_leave": "Hand the lead to another member first",
-      "bank_full": "The guild bank is full"
+      "bank_full": "The guild bank is full",
+      "bank_not_empty": "The guild bank must be emptied before the guild can end"
     },
     "instance": {
       "level": "Your level is too low to enter",
