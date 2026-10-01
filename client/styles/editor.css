@@ -288,3 +288,7 @@
 /* Monster spawns in the map properties. */
 .spawn-section { margin-top: 12px; }
 .spawn-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin-bottom: 6px; }
+/* Labels above the controls: the 150px label column of .form-row would crush them. */
+.spawn-row .form-row { grid-template-columns: 1fr; gap: 2px; }
+.spawn-row .form-row > * { min-width: 0; }
+@media (max-width: 560px) { .spawn-row { grid-template-columns: 1fr 1fr; } }
