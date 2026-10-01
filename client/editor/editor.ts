@@ -207,7 +207,7 @@ export class MapEditorApp {
       group('extra', [
         this.button(t('editor.properties'), () => void this.openProperties()),
         this.button(t('editor.tilesets'), () => void this.openTilesets()),
-        this.button(t('db.button'), () => void new DatabaseEditor(this.root, this.api, { ...this.resources }, () => (this.map ? this.eventLookups(this.map).then((l) => ({ ...l, events: [] })) : Promise.reject(new Error('no map')))).open().catch((e) => this.showError(e))),
+        this.button(t('db.button'), () => void new DatabaseEditor(this.root, this.api, { ...this.resources }, () => (this.map ? this.eventLookups(this.map).then((l) => ({ ...l, events: [] })) : Promise.reject(new Error('no map'))), this.options.assets).open().catch((e) => this.showError(e))),
         this.button(t('editor.versions'), () => void this.openVersions()),
         this.button(t('editor.resources.button'), () => openResourceManager(this.root, this.api, () => void this.loadResourceLists())),
         this.button(t('editor.import.button'), () => openImportDialog(this.root, this.api, () => void this.reloadTree())),

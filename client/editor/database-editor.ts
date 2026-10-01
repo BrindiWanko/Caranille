@@ -18,6 +18,8 @@ import { DATABASE_TYPES, PARAMS, paramAt, type DatabaseType, type ParamCurve } f
 import { ICON_COLUMNS } from '../../shared/icons.js';
 import type { SystemSettings } from '../../shared/settings.js';
 import { rasterize } from '../art/render.js';
+import type { AssetStore } from '../engine/assets.js';
+import { sheetFlags } from '../engine/character.js';
 import { t, tDynamic } from '../i18n.js';
 import { confirmDialog } from '../ui/dialog.js';
 import { el, icon } from '../ui/dom.js';
@@ -38,6 +40,8 @@ interface Lookups {
   records: Partial<Record<DatabaseType, AnyRecord[]>>;
   resources: Record<string, string[]>;
   system: SystemSettings | null;
+  /** Image store, to preview sprites. */
+  assets?: AssetStore;
   /** Lookups of the command editor (loaded for the common events and quests tabs: maps, cell picker). */
   commands?: CommandLookups & { host: HTMLElement };
   /** Events of a map, for event pickers. */
@@ -85,10 +89,44 @@ class RecordForm {
     private readonly onChange: () => void,
   ) {
     this.element.append(...fields.map((f) => this.fieldRow(f, [f.key])));
+    if (fields.some((f) => f.key === 'characterName') && fields.some((f) => f.key === 'characterIndex')) this.addSpritePreview();
+  }
+
+  private spriteRedraw: (() => void) | null = null;
+
+  /** Adds a preview of the chosen character sheet and index, right after the index field. */
+  private addSpritePreview(): void {
+    const canvas = el('canvas', { className: 'appearance-preview', attrs: { width: '96', height: '96' } });
+    this.spriteRedraw = () => {
+      const ctx = canvas.getContext('2d')!;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const name = String(this.record.characterName ?? '');
+      const index = Number(this.record.characterIndex) || 0;
+      const assets = this.lookups.assets;
+      if (!name || !assets) return;
+      void assets.image('characters', name).then((image) => {
+        if (!image || name !== this.record.characterName || index !== (Number(this.record.characterIndex) || 0)) return;
+        const { single } = sheetFlags(name);
+        const fw = image.width / (single ? 3 : 12);
+        const fh = image.height / (single ? 4 : 8);
+        const bx = single ? 0 : (index % 4) * 3;
+        const by = single ? 0 : Math.floor(index / 4) * 4;
+        const scale = Math.min(canvas.width / fw, canvas.height / fh);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(image, (bx + 1) * fw, by * fh, fw, fh, (canvas.width - fw * scale) / 2, canvas.height - fh * scale, fw * scale, fh * scale);
+      });
+    };
+    this.spriteRedraw();
+    const row = el('div', { className: 'db-row wide' }, [el('span', { className: 'db-label', text: '' }), canvas]);
+    const after = [...this.element.children].find((c) => c.querySelector('input[type="number"][max="7"]'));
+    if (after) after.after(row);
+    else this.element.append(row);
   }
 
   private change(path: (string | number)[], value: unknown): void {
     setPath(this.record, path, value);
+    if (path[0] === 'characterName' || path[0] === 'characterIndex') this.spriteRedraw?.();
     this.onChange();
   }
 
@@ -397,8 +435,10 @@ export class DatabaseEditor {
     private readonly api: EditorApi,
     resources: Record<string, string[]>,
     private readonly loadCommandLookups?: () => Promise<CommandLookups>,
+    assets?: AssetStore,
   ) {
     this.lookups.resources = resources;
+    this.lookups.assets = assets;
     const events = new Map<number, Promise<{ id: number; name: string }[]>>();
     this.lookups.mapEvents = (mapId) => {
       let list = events.get(mapId);
