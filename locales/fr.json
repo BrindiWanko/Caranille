@@ -1,4 +1,7 @@
 {
+  "dialog": {
+    "ok": "OK"
+  },
   "common": {
     "language": "Langue",
     "locale_name": {
@@ -764,6 +767,7 @@
     "saved": "Enregistré — utilisable immédiatement en jeu.",
     "delete_confirm": "Supprimer « {{name}} » ?",
     "import_confirm": "Remplacer toute la base de données par le contenu de ce fichier ?",
+    "discard_question": "Les modifications de cet élément ne sont pas enregistrées. Les abandonner ?",
     "imported": "Base de données importée.",
     "one_per_line": "Un nom par ligne ; la première ligne correspond au numéro 0.",
     "commands_help": "Liste de commandes au format JSON (l'éditeur visuel arrive à l'étape suivante).",

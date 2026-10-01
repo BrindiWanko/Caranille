@@ -19,6 +19,7 @@ import { ICON_COLUMNS } from '../../shared/icons.js';
 import type { SystemSettings } from '../../shared/settings.js';
 import { rasterize } from '../art/render.js';
 import { t, tDynamic } from '../i18n.js';
+import { confirmDialog } from '../ui/dialog.js';
 import { el, icon } from '../ui/dom.js';
 import { EditorApiError, type EditorApi } from './api.js';
 import type { CommandLookups } from './command-specs.js';
@@ -461,7 +462,7 @@ export class DatabaseEditor {
   }
 
   private async showTab(tab: Tab): Promise<void> {
-    if (this.dirty && !window.confirm(t('editor.unsaved_question'))) return;
+    if (this.dirty && !(await this.confirmDiscard())) return;
     this.dirty = false;
     this.tab = tab;
     this.renderTabs();
@@ -478,7 +479,7 @@ export class DatabaseEditor {
       return;
     }
     this.records = await this.loadType(tab);
-    this.select(this.records[0] ?? null);
+    await this.select(this.records[0] ?? null);
   }
 
   private renderList(): void {
@@ -489,15 +490,20 @@ export class DatabaseEditor {
             className: `tree-label${r.id === this.selected?.id ? ' current' : ''}`,
             text: `${String(r.id).padStart(3, '0')} ${r.name}`,
             attrs: { type: 'button' },
-            on: { click: () => this.select(r) },
+            on: { click: () => void this.select(r) },
           }),
         ]),
       ),
     );
   }
 
-  private select(record: AnyRecord | null): void {
-    if (this.dirty && record !== this.selected && !window.confirm(t('editor.unsaved_question'))) return;
+  /** Asks whether the unsaved changes of the current entry can be dropped. */
+  private confirmDiscard(): Promise<boolean> {
+    return confirmDialog({ title: t('editor.unsaved_title'), message: t('db.discard_question'), ok: t('editor.discard'), danger: true });
+  }
+
+  private async select(record: AnyRecord | null): Promise<void> {
+    if (this.dirty && record !== this.selected && !(await this.confirmDiscard())) return;
     this.dirty = false;
     this.selected = record ? (JSON.parse(JSON.stringify(record)) as AnyRecord) : null;
     this.renderList();
@@ -661,18 +667,18 @@ export class DatabaseEditor {
     const { record } = await this.api.post<{ record: AnyRecord }>(`/db/${this.tab}`, copy && this.selected ? { copyOf: this.selected.id } : {});
     this.records.push(record);
     this.dirty = false;
-    this.select(record);
+    await this.select(record);
   }
 
   private async remove(): Promise<void> {
     if (!this.selected || isSettingsTab(this.tab)) return;
-    if (!window.confirm(t('db.delete_confirm', { name: this.selected.name }))) return;
+    if (!(await confirmDialog({ title: t('editor.delete'), message: t('db.delete_confirm', { name: this.selected.name }), ok: t('editor.delete'), danger: true }))) return;
     try {
       await this.api.delete(`/db/${this.tab}/${this.selected.id}`);
       const id = this.selected.id;
       this.records = this.records.filter((r) => r.id !== id);
       this.dirty = false;
-      this.select(this.records[0] ?? null);
+      await this.select(this.records[0] ?? null);
     } catch (err) {
       this.status.textContent = err instanceof EditorApiError ? tDynamic(err.key, err.params) : String(err);
     }
@@ -691,7 +697,7 @@ export class DatabaseEditor {
     input.addEventListener('change', async () => {
       const file = input.files?.[0];
       if (!file) return;
-      if (!window.confirm(t('db.import_confirm'))) return;
+      if (!(await confirmDialog({ title: t('db.import'), message: t('db.import_confirm'), ok: t('db.import'), danger: true }))) return;
       try {
         const data = JSON.parse(await file.text()) as unknown;
         await this.api.post('/db-import', data);

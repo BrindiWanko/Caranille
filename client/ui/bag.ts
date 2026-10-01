@@ -12,6 +12,7 @@
 import { PARAMS } from '../../shared/database.js';
 import type { InventoryEntry, InventoryPayload } from '../../shared/protocol.js';
 import { t, tDynamic } from '../i18n.js';
+import { confirmDialog, promptDialog } from './dialog.js';
 import { el, icon } from './dom.js';
 import { makeHotbarDraggable } from './hud.js';
 import { GameWindow } from './windows.js';
@@ -220,9 +221,12 @@ export class BagWindow extends GameWindow {
     if (e.kind === 'item' && e.usable) add(t('bag.use'), () => this.actions.use(e.id));
     if (e.kind !== 'item') add(t('bag.equip'), () => this.actions.equip(e));
     if (e.kind !== 'item' || e.category === 'regular') {
-      add(t('bag.discard'), () => {
-        const count = e.quantity > 1 ? Number(window.prompt(t('bag.discard_how_many', { name: e.name, max: e.quantity }), '1')) : 1;
-        if (Number.isInteger(count) && count > 0 && window.confirm(t('bag.discard_confirm', { name: e.name, count: Math.min(count, e.quantity) }))) this.actions.discard(e, Math.min(count, e.quantity));
+      add(t('bag.discard'), async () => {
+        const title = t('bag.discard');
+        const typed = e.quantity > 1 ? await promptDialog({ title, message: t('bag.discard_how_many', { name: e.name, max: e.quantity }), value: '1', number: { min: 1, max: e.quantity } }) : '1';
+        const count = Math.min(Number(typed), e.quantity);
+        if (typed === null || !Number.isInteger(count) || count <= 0) return;
+        if (await confirmDialog({ title, message: t('bag.discard_confirm', { name: e.name, count }), ok: title, danger: true })) this.actions.discard(e, count);
       }, true);
     }
     add(t('bag.link'), () => this.actions.linkInChat(e.name));

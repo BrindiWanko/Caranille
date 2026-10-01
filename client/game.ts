@@ -20,6 +20,7 @@ import { PlayerController } from './engine/player-controller.js';
 import { MapScene } from './engine/scene.js';
 import { onLocaleChange, t, tDynamic } from './i18n.js';
 import type { GameSocket } from './main.js';
+import { promptDialog } from './ui/dialog.js';
 import { el } from './ui/dom.js';
 import { Hud, type HotbarDrop, type MenuButton, type TargetInfo } from './ui/hud.js';
 import { BagWindow } from './ui/bag.js';
@@ -922,14 +923,14 @@ export class Game implements MenuHost {
       { label: t('guild.invite'), icon: 'guild', onSelect: () => this.socket.emit('guildInvite', id) },
       { label: t('chat.menu.inspect'), icon: 'character', onSelect: () => this.socket.emit('inspect', id) },
       { label: t('chat.menu.ignore'), icon: 'close', onSelect: () => this.socket.emit('ignore', name) },
-      { label: t('chat.menu.report'), icon: 'bell', onSelect: () => this.reportPlayer(id, name) },
+      { label: t('chat.menu.report'), icon: 'bell', onSelect: () => void this.reportPlayer(id, name) },
     ]);
     this.windows.open(this.menus.choice);
   }
 
   /** Reports a player to the moderators, with a reason typed by the player. */
-  private reportPlayer(id: number, name: string): void {
-    const reason = window.prompt(t('chat.report_prompt', { name }), '')?.trim();
+  private async reportPlayer(id: number, name: string): Promise<void> {
+    const reason = (await promptDialog({ title: t('chat.menu.report'), message: t('chat.report_prompt', { name }), ok: t('chat.menu.report'), maxLength: MAX_REPORT_LENGTH }))?.trim();
     if (reason) this.socket.emit('report', id, reason.slice(0, MAX_REPORT_LENGTH));
   }
 

@@ -24,6 +24,7 @@ import {
 } from '../../shared/guild.js';
 import type { InventoryPayload } from '../../shared/protocol.js';
 import { t, tDynamic } from '../i18n.js';
+import { confirmDialog } from './dialog.js';
 import { el, icon } from './dom.js';
 import { GameWindow } from './windows.js';
 
@@ -223,10 +224,10 @@ export class GuildWindow extends GameWindow {
         el('span', { className: 'friend-name', text: `${m.name} (${t('hud.level', { level: m.level })})` }),
         el('span', { className: 'friend-location', text: m.online ? t('friends.online') : m.lastSeen ? t('guild.last_seen', { date: m.lastSeen.slice(0, 10) }) : t('friends.offline') }),
         rankSelect,
-        below && this.can(GuildPermission.Kick) ? el('button', { className: 'button small danger', text: '✕', title: t('guild.kick'), attrs: { type: 'button' }, on: { click: () => window.confirm(t('guild.kick_confirm', { name: m.name })) && this.host.kick(m.id) } }) : el('span'),
+        below && this.can(GuildPermission.Kick) ? el('button', { className: 'button small danger', text: '✕', title: t('guild.kick'), attrs: { type: 'button' }, on: { click: async () => (await confirmDialog({ title: t('guild.kick'), message: t('guild.kick_confirm', { name: m.name }), ok: t('guild.kick'), danger: true })) && this.host.kick(m.id) } }) : el('span'),
       ]);
     });
-    return el('div', {}, [invite, el('div', { className: 'friend-list' }, rows), el('button', { className: 'button small danger', text: t('guild.leave'), attrs: { type: 'button' }, on: { click: () => window.confirm(t('guild.leave_confirm')) && this.host.leave() } })]);
+    return el('div', {}, [invite, el('div', { className: 'friend-list' }, rows), el('button', { className: 'button small danger', text: t('guild.leave'), attrs: { type: 'button' }, on: { click: async () => (await confirmDialog({ title: t('guild.leave'), message: t('guild.leave_confirm'), ok: t('guild.leave'), danger: true })) && this.host.leave() } })]);
   }
 
   private info(v: GuildView): HTMLElement {

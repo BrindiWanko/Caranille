@@ -8,3 +8,4 @@ uploads/*
 !uploads/.gitkeep
 prompt.md
 step.txt
+*.md

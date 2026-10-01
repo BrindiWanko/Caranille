@@ -1,4 +1,7 @@
 {
+  "dialog": {
+    "ok": "OK"
+  },
   "common": {
     "language": "Language",
     "locale_name": {
@@ -764,6 +767,7 @@
     "saved": "Saved — usable in game right away.",
     "delete_confirm": "Delete \"{{name}}\"?",
     "import_confirm": "Replace the whole database with the content of this file?",
+    "discard_question": "The changes of this entry are not saved. Discard them?",
     "imported": "Database imported.",
     "one_per_line": "One name per line; the first line is number 0.",
     "commands_help": "Command list as JSON (the visual editor comes in the next step).",
