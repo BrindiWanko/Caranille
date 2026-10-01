@@ -230,7 +230,7 @@ views/    pages EJS        locales/  traductions FR/EN        tests/  tests node
 scripts/  build, développement, test de charge, export de la démo, contrôles
 ```
 
-📄 Licence du code : ISC.
+📄 Licence du code : [Apache 2.0](LICENSE).
 
 ---
 
@@ -344,4 +344,4 @@ the demo as JSON in `demo/`.
   headers (see the configuration above), HTTPS with `certbot --nginx`. 💾 Back up `data/` and
   `uploads/`.
 
-📄 Code license: ISC.
+📄 Code license: [Apache 2.0](LICENSE).
