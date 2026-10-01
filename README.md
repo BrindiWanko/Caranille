@@ -13,6 +13,19 @@ base SQLite** : pas de serveur de base de données à installer. 🚀
 
 ---
 
+## 🤖 Un projet fait par une IA
+
+**Caranille a été entièrement conçu et programmé par une intelligence artificielle : [Claude Opus 5.5](https://www.anthropic.com/claude) d'Anthropic**, pilotée via Claude Code. 🧠
+
+- 💻 Le code (serveur, client, éditeur, tests), les générateurs de graphismes et cette documentation
+  sont écrits par l'IA, à partir des demandes et des retours de l'humain qui dirige le projet.
+- 🧪 Le projet est vérifié par plus de 100 tests automatisés (`npm test`), un test de charge et
+  une campagne de test de bout en bout dans le navigateur (voir `TEST-REPORT.md` s'il est présent).
+- ⚠️ Comme tout code généré, il mérite d'être relu et testé avant une mise en production : des
+  bugs peuvent subsister. Les rapports et corrections sont les bienvenus. 🙏
+
+---
+
 ## ✨ En un coup d'œil
 
 | | |
@@ -50,7 +63,7 @@ quête, blasons de guilde, icône de l'application… 🖌️
 
 - 🖥️ **Serveur** : TypeScript (strict), Express 5, socket.io 4, better-sqlite3 (seul stockage), vues EJS
 - 🌐 **Client** : TypeScript compilé par esbuild, rendu canvas, fenêtres façon RPG classique
-- 🧪 **Tests** : `node --test` (plus de 100 tests), test de charge intégré
+- 🧪 **Tests** : `node --test` (plus de 110 tests), test de charge intégré
 
 ---
 
@@ -231,6 +244,17 @@ scripts/  build, développement, test de charge, export de la démo, contrôles
 Tile maps, events and cutscenes, quests, real-time combat on the map, parties, guilds, instanced
 dungeons and raids — all served by **a single Node.js process** with **a single SQLite database**.
 No database server to install. 🚀
+
+## 🤖 An AI-made project
+
+**Caranille was entirely designed and written by an artificial intelligence: [Claude Opus 5.5](https://www.anthropic.com/claude) by Anthropic**, driven through Claude Code. 🧠
+
+- 💻 The code (server, client, editor, tests), the graphics generators and this documentation are
+  written by the AI, from the requests and feedback of the human directing the project.
+- 🧪 It is checked by 100+ automated tests (`npm test`), a load test and an end-to-end test
+  campaign in the browser (see `TEST-REPORT.md` when present).
+- ⚠️ Like any generated code, review and test it before going to production: bugs may remain.
+  Reports and fixes are welcome. 🙏
 
 ## ✨ Highlights
 
