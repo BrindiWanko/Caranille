@@ -215,7 +215,7 @@ test('an administrator imports a zipped project: tilesets, tree, maps, resources
     'MyGame/img/characters/ImportHero.png': fakePng(576, 384),
     'MyGame/img/battlebacks1/Grass.png': fakePng(1000, 740),
   });
-  const res = await client.request('/api/editor/import', { method: 'POST', headers: { 'content-type': 'application/octet-stream', 'x-csrf-token': csrf }, body: zip });
+  const res = await client.request('/api/editor/import', { method: 'POST', headers: { 'content-type': 'application/octet-stream', 'x-csrf-token': csrf }, body: new Uint8Array(zip) });
   assert.equal(res.status, 200);
   const { report } = (await res.json()) as { report: { maps: number; tilesets: number; images: number; warnings: { key: string; params?: Record<string, unknown> }[]; mapIds: Record<string, number> } };
   assert.equal(report.tilesets, 1);
