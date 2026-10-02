@@ -410,6 +410,8 @@ body.touch-mode .message-face { width: 96px; height: 96px; }
   }
   /* Docked windows stack on phones: keep the one underneath from showing through. */
   .game-window.skin-window::before { opacity: 0.98; }
+  /* Per-window widths (min(94vw, ...)) must not leave a strip of the window underneath. */
+  .window-layer > .game-window { width: 100%; min-width: 0; max-width: none; }
   .main-menu-layout { grid-template-columns: 1fr; }
   .message-text { font-size: 1rem; }
   .map-banner { font-size: 1.2rem; }
