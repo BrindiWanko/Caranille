@@ -11,3 +11,4 @@ step.txt
 
 # E2E test accounts
 tests/e2e-accounts.local.txt
+fix.txt

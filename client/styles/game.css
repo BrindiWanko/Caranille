@@ -381,6 +381,13 @@ html, body.game {
 }
 .touch-small:disabled { opacity: 0.4; }
 
+/* Portrait phones: the top buttons no longer fit between the player frame and the
+   minimap, so they move under the player frame (party frames are pushed down). */
+@media (max-width: 500px) {
+  .touch-top { top: calc(98px + var(--safe-top)); left: calc(10px + var(--safe-left)); right: auto; }
+  body.touch-mode .hud-party { margin-top: 52px; }
+}
+
 /* Compact layout when touch controls are shown (phones). */
 body.touch-mode .menu-bar, body.touch-mode .hotbar { display: none; }
 body.touch-mode .hud-player { width: 230px; transform: scale(0.82); transform-origin: top left; }
@@ -401,6 +408,8 @@ body.touch-mode .message-face { width: 96px; height: 96px; }
     width: 100%;
     max-height: 75vh;
   }
+  /* Docked windows stack on phones: keep the one underneath from showing through. */
+  .game-window.skin-window::before { opacity: 0.98; }
   .main-menu-layout { grid-template-columns: 1fr; }
   .message-text { font-size: 1rem; }
   .map-banner { font-size: 1.2rem; }
