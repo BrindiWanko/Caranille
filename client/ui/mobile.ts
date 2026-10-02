@@ -168,11 +168,12 @@ export class TouchControls {
       e.preventDefault();
       this.stickPointer = e.pointerId;
       this.zone.setPointerCapture(e.pointerId);
-      const rect = this.zone.getBoundingClientRect();
-      this.originX = e.clientX - rect.left;
-      this.originY = e.clientY - rect.top;
+      // Fixed stick: the origin stays at the idle position, wherever the touch lands in the zone.
+      const rest = this.restPosition();
+      this.originX = rest.x;
+      this.originY = rest.y;
       this.zone.classList.add('active');
-      this.placeStick(this.originX, this.originY, 0, 0);
+      this.zone.dispatchEvent(new PointerEvent('pointermove', { pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY }));
     });
     this.zone.addEventListener('pointermove', (e) => {
       if (e.pointerId !== this.stickPointer) return;
@@ -203,10 +204,13 @@ export class TouchControls {
 
   /** Idle position: bottom-left corner of the zone, clear of the screen edges. */
   private resetStick(): void {
-    const radius = (this.base.offsetWidth || 128) / 2;
-    const x = radius + 36;
-    const y = this.zone.clientHeight - radius - 36;
+    const { x, y } = this.restPosition();
     this.placeStick(x, y, 0, 0);
+  }
+
+  private restPosition(): { x: number; y: number } {
+    const radius = (this.base.offsetWidth || 128) / 2;
+    return { x: radius + 36, y: this.zone.clientHeight - radius - 36 };
   }
 
   private placeStick(x: number, y: number, dx: number, dy: number): void {
