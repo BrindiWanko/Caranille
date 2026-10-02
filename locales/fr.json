@@ -311,7 +311,8 @@
       "party": "Groupe",
       "map": "Carte",
       "options": "Options",
-      "admin": "Administration"
+      "admin": "Administration",
+      "moderation": "Modération"
     },
     "hotbar_empty": "Emplacement libre : glissez-y une compétence ou un objet, ou placez-le depuis la fenêtre Compétences (K)"
   },
@@ -372,7 +373,9 @@
     "title": "Administration",
     "resources_link": "Voir les ressources graphiques",
     "open_editor": "Ouvrir l'éditeur de cartes",
-    "panel_link": "Panel d’administration"
+    "panel_link": "Panel d’administration",
+    "mod_title": "Modération",
+    "mod_panel_link": "Panel de modération"
   },
   "editor": {
     "title": "Éditeur",

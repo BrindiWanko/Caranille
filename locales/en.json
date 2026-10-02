@@ -311,7 +311,8 @@
       "party": "Party",
       "map": "Map",
       "options": "Options",
-      "admin": "Administration"
+      "admin": "Administration",
+      "moderation": "Moderation"
     },
     "hotbar_empty": "Empty slot: drag a skill or an item here, or place it from the Skills window (K)"
   },
@@ -372,7 +373,9 @@
     "title": "Administration",
     "resources_link": "View graphic resources",
     "open_editor": "Open the map editor",
-    "panel_link": "Administration panel"
+    "panel_link": "Administration panel",
+    "mod_title": "Moderation",
+    "mod_panel_link": "Moderation panel"
   },
   "editor": {
     "title": "Editor",

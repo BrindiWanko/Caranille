@@ -201,3 +201,23 @@ body[data-zoom="3"] { --zoom: 3; }
 .admin-log { margin: 6px 0; }
 .admin-log summary { cursor: pointer; color: #ffd66b; }
 .admin-content fieldset { border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; margin: 8px 0; }
+
+/* Admin panel: style the controls built by client/pages/admin.ts, and don't centre the page vertically. */
+body.admin-panel { justify-content: flex-start; padding-top: 0; }
+.admin-root input, .admin-root select, .admin-root textarea {
+  font: inherit;
+  padding: 6px 8px;
+  border: 2px solid #6b7cc4;
+  border-radius: 3px;
+  background: rgba(5, 10, 35, 0.75);
+  color: var(--text);
+}
+.admin-root input:focus, .admin-root select:focus, .admin-root textarea:focus { outline: none; border-color: var(--accent); }
+.admin-row input[type='search'], .admin-row input[type='text'] { flex: 1 1 9em; }
+
+/* Phones: the account bar (name, role, admin link, logout) wraps, so give it its own row under the language switch. */
+@media (max-width: 520px) {
+  body.site { padding-top: 100px; }
+  .account-bar { top: calc(54px + env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); flex-wrap: wrap; row-gap: 2px; }
+  .admin-root { margin-top: 0; }
+}

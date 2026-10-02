@@ -158,7 +158,7 @@ export class Game implements MenuHost {
       status: new StatusWindow(this.sheetHost()),
       map: new MapWindow(() => this.hud.bigMap(), () => this.scene.map.displayName),
       options: new OptionsWindow(this.options, this, () => this.refreshLanguage()),
-      admin: new AdminWindow(() => void this.openEditor()),
+      admin: new AdminWindow(() => void this.openEditor(), () => this.isAdmin()),
       bag: new BagWindow({
         use: (id) => this.socket.emit('useItem', id),
         equip: (e) => e.slot && this.socket.emit('equip', e.slot, e.id),
@@ -419,6 +419,11 @@ export class Game implements MenuHost {
     return this.role === 'admin';
   }
 
+  /** Administrators and moderators both get an entry for the administration panel. */
+  isStaff(): boolean {
+    return this.role === 'admin' || this.role === 'moderator';
+  }
+
   logout(): void {
     this.socket.disconnect();
     window.location.href = '/characters';
@@ -474,8 +479,8 @@ export class Game implements MenuHost {
       { id: 'map', icon: 'map', labelKey: 'hud.menu.map', shortcut: 'M', enabled: true, onClick: () => this.windows.toggle(this.menus.map) },
       { id: 'options', icon: 'options', labelKey: 'hud.menu.options', shortcut: 'O', enabled: true, onClick: () => this.windows.toggle(this.menus.options) },
     ];
-    if (this.role === 'admin') {
-      buttons.push({ id: 'admin', icon: 'admin', labelKey: 'hud.menu.admin', enabled: true, onClick: () => this.windows.toggle(this.menus.admin) });
+    if (this.role === 'admin' || this.role === 'moderator') {
+      buttons.push({ id: 'admin', icon: 'admin', labelKey: this.role === 'admin' ? 'hud.menu.admin' : 'hud.menu.moderation', enabled: true, onClick: () => this.windows.toggle(this.menus.admin) });
     }
     // Opening a window clears the badge of its button.
     for (const b of buttons) {
@@ -653,7 +658,7 @@ export class Game implements MenuHost {
     this.socket.on('roleChanged', ({ role }) => {
       this.role = role;
       // The administration window and its menu entries follow the new role.
-      if (role !== 'admin' && this.windows.isOpen(this.menus.admin)) this.windows.close(this.menus.admin);
+      if (role !== 'admin' && role !== 'moderator' && this.windows.isOpen(this.menus.admin)) this.windows.close(this.menus.admin);
       this.buildMenuBar();
       this.hud.notify(t('notify.role_changed', { role: tDynamic(`auth.role.${role}`) }));
       this.audio.play('ok');

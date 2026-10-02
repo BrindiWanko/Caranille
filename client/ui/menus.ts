@@ -28,6 +28,7 @@ export interface MenuHost {
   /** Social windows and the admin window (also reached from the menu bar, hidden on phones). */
   openWindow(id: 'friends' | 'guild' | 'party' | 'admin'): void;
   isAdmin(): boolean;
+  isStaff(): boolean;
   logout(): void;
   isFullscreen(): boolean;
   toggleFullscreen(): void;
@@ -87,7 +88,7 @@ export class MainMenu extends GameWindow {
       { label: t('hud.menu.party'), icon: 'party', onSelect: () => this.host.openWindow('party') },
       { label: t('menu.map'), icon: 'map', onSelect: () => this.host.openMap() },
       { label: t('menu.options'), icon: 'options', onSelect: () => this.host.openOptions() },
-      ...(this.host.isAdmin() ? [{ label: t('hud.menu.admin'), icon: 'admin' as const, onSelect: () => this.host.openWindow('admin') }] : []),
+      ...(this.host.isStaff() ? [{ label: t(this.host.isAdmin() ? 'hud.menu.admin' : 'hud.menu.moderation'), icon: 'admin' as const, onSelect: () => this.host.openWindow('admin') }] : []),
       { label: t('menu.logout'), icon: 'close', onSelect: () => this.host.logout() },
     ];
     this.setList(items, this.listArea);
@@ -199,11 +200,17 @@ export class OptionsWindow extends GameWindow {
 
 /** Entry point of the administration tools. */
 export class AdminWindow extends GameWindow {
-  constructor(private readonly openEditor: () => void) {
+  constructor(private readonly openEditor: () => void, private readonly isAdmin: () => boolean) {
     super('admin', t('admin.title'), { className: 'admin-window' });
   }
 
   override onOpen(): void {
+    // Moderators only get the panel (the server limits it to their tools).
+    if (!this.isAdmin()) {
+      this.setTitle(t('admin.mod_title'));
+      this.setList([{ label: t('admin.mod_panel_link'), icon: 'admin', onSelect: () => window.open('/admin', '_blank', 'noopener') }]);
+      return;
+    }
     this.setTitle(t('admin.title'));
     this.setList([
       { label: t('admin.open_editor'), icon: 'map', onSelect: () => this.openEditor() },
