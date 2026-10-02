@@ -751,3 +751,11 @@ body.touch-mode .hud-target { left: calc(206px + var(--safe-left)); transform: s
 .modal.game-dialog { width: min(92vw, 420px); padding: 4px 6px; }
 .game-dialog-message { margin: 0 0 8px; line-height: 1.5; white-space: pre-line; }
 .game-dialog-input { box-sizing: border-box; width: 100%; font: inherit; padding: 5px 6px; background: #0f0c1c; color: var(--text); border: 1px solid #5a6aa8; border-radius: 3px; }
+
+@media (max-width: 500px) {
+  /* The open chat must leave the (moved) top buttons reachable so it can be closed. */
+  body.touch-mode .chat-box.open { top: calc(150px + var(--safe-top)); }
+}
+
+/* Touch devices (also in landscape): stacked windows must not show the one underneath. */
+body.touch-mode .game-window.skin-window::before { opacity: 0.98; }
