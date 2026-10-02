@@ -163,19 +163,19 @@ export class TouchControls {
   }
 
   private bindStick(): void {
-    this.zone.addEventListener('pointerdown', (e) => {
+    // Only the stick itself reacts: a tap elsewhere goes through to the map (tap-to-move).
+    this.base.addEventListener('pointerdown', (e) => {
       if (this.stickPointer !== null) return;
       e.preventDefault();
       this.stickPointer = e.pointerId;
-      this.zone.setPointerCapture(e.pointerId);
+      this.base.setPointerCapture(e.pointerId);
       // Fixed stick: the origin stays at the idle position, wherever the touch lands in the zone.
       const rest = this.restPosition();
       this.originX = rest.x;
       this.originY = rest.y;
       this.zone.classList.add('active');
-      this.zone.dispatchEvent(new PointerEvent('pointermove', { pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY }));
     });
-    this.zone.addEventListener('pointermove', (e) => {
+    this.base.addEventListener('pointermove', (e) => {
       if (e.pointerId !== this.stickPointer) return;
       const rect = this.zone.getBoundingClientRect();
       const radius = this.base.offsetWidth / 2 || 60;
@@ -198,8 +198,8 @@ export class TouchControls {
       this.zone.classList.remove('active');
       this.resetStick();
     };
-    this.zone.addEventListener('pointerup', end);
-    this.zone.addEventListener('pointercancel', end);
+    this.base.addEventListener('pointerup', end);
+    this.base.addEventListener('pointercancel', end);
   }
 
   /** Idle position: bottom-left corner of the zone, clear of the screen edges. */

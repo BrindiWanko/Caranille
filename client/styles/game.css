@@ -314,6 +314,8 @@ html, body.game {
   width: 45%;
   height: 60%;
   touch-action: none;
+  /* The zone only positions the stick; taps outside the stick must reach the map. */
+  pointer-events: none;
 }
 .stick-base, .stick-knob {
   position: absolute;
@@ -325,6 +327,8 @@ html, body.game {
   pointer-events: none;
 }
 .stick-base {
+  pointer-events: auto;
+  touch-action: none;
   width: calc(128px * var(--control-scale, 1));
   height: calc(128px * var(--control-scale, 1));
   background-size: calc(192px * var(--control-scale, 1)) calc(128px * var(--control-scale, 1));
@@ -759,3 +763,7 @@ body.touch-mode .hud-target { left: calc(206px + var(--safe-left)); transform: s
 
 /* Touch devices (also in landscape): stacked windows must not show the one underneath. */
 body.touch-mode .game-window.skin-window::before { opacity: 0.98; }
+
+/* Only the touch buttons themselves catch taps; the gaps around them reach the map. */
+.touch-buttons { pointer-events: none; }
+.touch-buttons > *, .touch-buttons .touch-button, .touch-buttons .touch-skill { pointer-events: auto; }
